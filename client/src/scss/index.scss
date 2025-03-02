@@ -1,0 +1,34 @@
+@import 'header.scss';
+@import 'nav.scss';
+@import 'courses.scss';
+@import 'auth.scss';
+@import 'coursepreview.scss';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  // font-family: 'Inter', serif;
+  font-family: 'Noto Sans', serif;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+main {
+  display: flex;
+  flex-direction: row;
+}
+
+.content {
+  width: calc(100vw - 255px);
+  overflow-y: auto;
+  padding: 24px;
+  margin-left: 255px;
+  margin-top: 78px;
+}

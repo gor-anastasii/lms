@@ -1,0 +1,131 @@
+.sort {
+  margin-bottom: 20px;
+  ul {
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+
+    li {
+      cursor: pointer;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgb(36, 36, 36);
+      border: 1px solid #f3f3f3;
+      border-radius: 8px;
+      padding: 10px 18px;
+      height: 40px;
+      transition: all 0.3s ease-in-out;
+
+      img {
+        width: 22px;
+        height: 22px;
+      }
+
+      &:hover {
+        background-color: #f1f1f1;
+      }
+    }
+
+    .active-sort {
+      background-color: rgba(184, 56, 216, 0.2);
+      border-color: rgba(184, 56, 216, 0.2);
+      color: rgb(167, 0, 209);
+
+      &:hover {
+        background-color: rgba(184, 56, 216, 0.3);
+      }
+    }
+  }
+}
+
+.course-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: center;
+  justify-items: center;
+  gap: 14px;
+}
+
+.course-card {
+  cursor: pointer;
+  width: 246px;
+  height: 272px;
+  padding: 12px;
+  border: 1px solid #f3f3f3;
+  border-radius: 12px;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    box-shadow: 0px 20px 35px rgba(0, 0, 0, 0.06);
+    background-color: #efb1ff8e;
+    p {
+      color: #8b1ca7;
+    }
+  }
+
+  img {
+    width: 222px;
+    height: auto;
+    border: none;
+    border-radius: 10px;
+  }
+
+  &-info {
+    p {
+      margin-top: 8px;
+      font-size: 18px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 600;
+      transition: all 0.2s ease-in-out;
+    }
+  }
+
+  &-topic {
+    font-size: 12px;
+    color: #737373;
+  }
+
+  &-parts {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: #737373;
+    margin: 10px 0 12px;
+
+    div {
+      width: 20px;
+      height: 20px;
+      border: none;
+      border-radius: 50%;
+      background-color: #e88dff98;
+      color: #8b1ca7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  &-price {
+    background-color: #edfad7;
+    color: #4d802a;
+    border: 1px solid #ace849;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 6px;
+    width: 85px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3px 0;
+  }
+}
