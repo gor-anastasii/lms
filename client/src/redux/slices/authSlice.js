@@ -52,8 +52,7 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.user = action.payload.user;
-        console.log('token ', action.payload.user.token);
-        state.token = action.payload.user.token; // Получаем токен из заголовков
+        state.token = action.payload.user.token;
         localStorage.setItem('token', action.payload.token);
       })
       .addCase(login.rejected, (state, action) => {

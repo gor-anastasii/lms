@@ -6,6 +6,7 @@ import AuthPage from './pages/AuthPage';
 
 import Header from './components/Header/Header';
 import CoursePreviewPage from './pages/СoursePreviewPage';
+import SettingsPage from './pages/SettingsPage';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/" element={<AllCoursePage />} />
           <Route path="/auth/*" element={<AuthPage />} />
           <Route path="/course/:id" element={<CoursePreviewPage />} />
+          <Route path="/settings/general" element={<SettingsPage />} />
         </Routes>
       </main>
     </div>

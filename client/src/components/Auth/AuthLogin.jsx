@@ -14,9 +14,9 @@ const AuthLogin = () => {
   };
 
   const fetchData = async () => {
-    console.log('token', token);
     await dispatch(fetchUserData(token));
-    console.log('user: ', user);
+    console.log('token', token);
+    console.log('local: ', localStorage.getItem('token'));
   };
 
   return (

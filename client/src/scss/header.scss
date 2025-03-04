@@ -9,6 +9,7 @@ header {
   background-color: white;
   height: 78px;
   width: 100vw;
+  z-index: 10;
   .logo {
     cursor: pointer;
     display: flex;
@@ -25,6 +26,24 @@ header {
     flex-direction: row;
     align-items: center;
     gap: 10px;
+
+    .btnHeaderBack {
+      cursor: pointer;
+      background-color: #fff;
+      border: none;
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+      padding: 13px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #0a0a0ace;
+      transition: all 0.6s ease-in-out;
+
+      &:hover {
+        background-color: #f3f3f3;
+      }
+    }
 
     .header-user {
       margin-right: 10px;
@@ -108,6 +127,7 @@ header {
     position: absolute;
     top: 68px;
     right: 30px;
+    z-index: 20;
     background-color: white;
     width: 258px;
     border: 1px solid #f3f3f3;
@@ -223,4 +243,22 @@ header {
       gap: 2px;
     }
   }
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  // background-color: rgba(0, 0, 0, 0.5);
+  z-index: 12;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.overlay-active {
+  visibility: visible;
+  opacity: 1;
 }

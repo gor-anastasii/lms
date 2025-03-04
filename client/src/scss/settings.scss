@@ -1,0 +1,304 @@
+.settings-container {
+  position: relative;
+  z-index: 1;
+
+  width: 820px;
+  h2 {
+    color: #0a0a0a;
+    font-size: 24px;
+    font-weight: 400;
+    margin-bottom: 40px;
+  }
+
+  h3 {
+    font-weight: 500;
+    font-size: 18px;
+    color: #0a0a0a;
+    margin-bottom: 4px;
+  }
+
+  p {
+    color: #737373;
+    font-size: 12px;
+  }
+
+  .settings-user-info {
+    margin: 40px 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 30px;
+
+    .settings-img {
+      cursor: pointer;
+      width: 94px;
+      height: 94px;
+      border: none;
+      border-radius: 50%;
+
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+    }
+
+    .settings-user-data {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+
+      span {
+        font-size: 12px;
+        color: #737373;
+        margin-bottom: 6px;
+      }
+
+      input {
+        padding: 10px 14px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        font-size: 14px;
+        width: 100%;
+        margin-bottom: 18px;
+        transition: all 0.3s ease-in-out, box-shadow 0.1s ease-in-out;
+
+        &:focus {
+          box-shadow: 0 0 0 2px rgba(243, 243, 243, 0.82);
+          border: 2px solid #fff;
+          background-color: #f3f3f3d2;
+          outline: none;
+        }
+
+        &:hover {
+          outline: none;
+          background-color: #f3f3f3d2;
+        }
+      }
+    }
+  }
+
+  .delete-profile {
+    cursor: pointer;
+    margin-top: 20px;
+    background-color: #ef4444;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+      background-color: #ef4444e5;
+    }
+
+    &:active {
+      background-color: #c51f1f;
+    }
+  }
+
+  .overlay {
+    position: fixed;
+    top: 78px;
+    left: 255px;
+    width: calc(100vw - 255px);
+    height: calc(100vh - 78px);
+    background-color: rgba(230, 230, 230, 0.5); // Полупрозрачный фон
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 18;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  .overlay-active {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .settings-img-popup {
+    position: absolute;
+    z-index: 28;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 24px;
+    width: 475px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+
+    .settings-img-header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 18px;
+      color: #0a0a0a;
+      h3 {
+        padding: 0;
+        margin: 0;
+      }
+
+      .settings-exit-popup {
+        cursor: pointer;
+        padding: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    p {
+      font-size: 14px;
+      margin-top: 6px;
+    }
+
+    .popus-btns {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 24px 0;
+      gap: 12px;
+
+      .settings-addImg {
+        cursor: pointer;
+        color: #fff;
+        background-color: #a63dc0;
+        padding: 14px 24px;
+        border: none;
+        border-radius: 8px;
+        transition: all 0.3s ease-in-out;
+
+        &:hover {
+          background-color: #a63dc0d5;
+        }
+
+        &:active {
+          background-color: #75238a;
+        }
+      }
+
+      .settings-delImg {
+        cursor: pointer;
+        width: 100%;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 10px 18px;
+        background-color: #fff;
+        transition: all 0.3s ease-in-out;
+
+        &:hover {
+          background-color: #f3f3f3c5;
+        }
+
+        &:active {
+          background-color: #e2e2e2;
+        }
+      }
+    }
+
+    .settings-popup-info {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 8px;
+      color: #737373;
+
+      svg {
+        margin-top: 3px;
+      }
+
+      p {
+        font-size: 12px;
+        margin: 0;
+      }
+    }
+  }
+
+  .settings-del-popup {
+    position: absolute;
+    z-index: 28;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 24px;
+    width: 425px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+
+    .settings-del-header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      color: #0a0a0a;
+      h3 {
+        padding: 0;
+        margin: 0;
+        font-size: 16px;
+      }
+
+      .settings-exit-popup {
+        cursor: pointer;
+        padding: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    p {
+      margin-top: 6px;
+    }
+
+    .del-popup-btns {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+
+      button {
+        cursor: pointer;
+        border-radius: 8px;
+        padding: 12px 16px;
+        border: none;
+        transition: all 0.3s ease-in-out;
+      }
+
+      button:first-child {
+        &:hover {
+          background-color: #f3f3f3e1;
+        }
+
+        &:active {
+          background-color: #d1d1d1ec;
+        }
+      }
+
+      .del-btn-popup {
+        background-color: #ef4444;
+        color: #fff;
+
+        &:hover {
+          background-color: #ef4444d8;
+        }
+
+        &:active {
+          background-color: #c51f1f;
+        }
+      }
+    }
+  }
+}

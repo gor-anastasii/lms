@@ -93,6 +93,26 @@
     color: #737373;
   }
 
+  .course-parts-rating {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    .course-card-rating {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 6px;
+      margin-right: 6px;
+
+      span {
+        font-size: 14px;
+        color: #737373;
+      }
+    }
+  }
+
   &-parts {
     display: flex;
     flex-direction: row;

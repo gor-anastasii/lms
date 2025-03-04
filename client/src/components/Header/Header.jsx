@@ -1,14 +1,18 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import HeaderPopup from './HeaderPopup';
 
 const Header = () => {
   const [activePopup, setActivePopup] = React.useState(false);
   const [activeInput, setActiveInput] = React.useState(false);
   const location = useLocation();
+  const navigator = useNavigate();
 
   const isAuth = ['/auth/signin', '/auth/signup'].includes(location.pathname);
-  const isInputHere = /^\/course\/\d+$/.test(location.pathname);
+  const isInputHere =
+    /^\/course\/\d+$/.test(location.pathname) || ['/settings/general'].includes(location.pathname);
+
+  const isBtnBack = ['/settings/general'].includes(location.pathname);
   return (
     <header>
       <Link to="/" className="logo">
@@ -28,6 +32,28 @@ const Header = () => {
                 onBlur={() => setActiveInput(false)}
               />
             </div>
+          )}
+
+          {isBtnBack && (
+            <button className="btnHeaderBack" onClick={() => navigator('/')}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-log-out h-4 w-4 mr-2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" x2="9" y1="12" y2="12"></line>
+              </svg>
+
+              <span>Назад к курсам</span>
+            </button>
           )}
 
           <button className="header-notify">
