@@ -1,18 +1,37 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import HeaderPopup from './HeaderPopup';
+import { useSelector, useDispatch } from 'react-redux';
+import { searchCoursesByQuery, loadCourses } from '../../redux/slices/courseSlice';
 
 const Header = () => {
   const [activePopup, setActivePopup] = React.useState(false);
   const [activeInput, setActiveInput] = React.useState(false);
+  const [searchQuery, setSearchQuery] = React.useState('');
+
   const location = useLocation();
   const navigator = useNavigate();
+  const dispatch = useDispatch();
+
+  //const { user } = useSelector((state) => state.auth);
 
   const isAuth = ['/auth/signin', '/auth/signup'].includes(location.pathname);
   const isInputHere =
     /^\/course\/\d+$/.test(location.pathname) || ['/settings/general'].includes(location.pathname);
 
   const isBtnBack = ['/settings/general'].includes(location.pathname);
+
+  const handleSearch = (event) => {
+    const query = event.target.value;
+    setSearchQuery(query);
+
+    if (query.trim()) {
+      dispatch(searchCoursesByQuery(query));
+    } else {
+      dispatch(loadCourses());
+    }
+  };
+
   return (
     <header>
       <Link to="/" className="logo">
@@ -28,6 +47,8 @@ const Header = () => {
               <input
                 type="text"
                 placeholder="Искать курс..."
+                value={searchQuery}
+                onChange={handleSearch}
                 onFocus={() => setActiveInput(true)}
                 onBlur={() => setActiveInput(false)}
               />
@@ -78,7 +99,9 @@ const Header = () => {
             <div
               onClick={() => setActivePopup((prev) => !prev)}
               className="header-user-img"
-              style={{ backgroundImage: 'url(/img/user.jpg)' }}></div>
+              style={{
+                backgroundImage: 'url(/img/default-user.svg)',
+              }}></div>
 
             <HeaderPopup activePopup={activePopup} closePopup={() => setActivePopup(false)} />
           </div>

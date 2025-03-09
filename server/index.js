@@ -12,9 +12,13 @@ import CourseTag from './models/CourseTagsModel.js';
 import Review from './models/ReviewModel.js';
 
 import authRouter from './routes/authRoutes.js';
+import courseRouter from './routes/courseRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
+
+Course.belongsToMany(Tag, { through: CourseTag, foreignKey: 'courseId' });
+Tag.belongsToMany(Course, { through: CourseTag, foreignKey: 'tagId' });
 
 dotenv.config();
 app.use(
@@ -27,6 +31,7 @@ app.use(
 );
 app.use(express.json());
 app.use('/auth', authRouter);
+app.use('/courses', courseRouter);
 
 app.get('/', (req, res) => res.send({ msg: 'hello from server' }));
 

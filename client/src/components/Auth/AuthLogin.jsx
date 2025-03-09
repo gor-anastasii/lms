@@ -1,22 +1,41 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, fetchUserData } from '../../redux/slices/authSlice';
+import { validateEmail, validatePassword } from '../../utils/validations';
 
 const AuthLogin = () => {
   const dispatch = useDispatch();
-  const { status, error, user, token } = useSelector((state) => state.auth);
+  const { status, error, token } = useSelector((state) => state.auth);
 
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [emailError, setEmailError] = React.useState('');
+  const [passwordError, setPasswordError] = React.useState('');
 
   const handleLogin = async () => {
-    await dispatch(login({ email, password }));
-  };
+    setEmailError('');
+    setPasswordError('');
 
-  const fetchData = async () => {
-    await dispatch(fetchUserData(token));
-    console.log('token', token);
-    console.log('local: ', localStorage.getItem('token'));
+    const emailValidation = validateEmail(email);
+    const passwordValidation = validatePassword(password);
+
+    if (emailValidation !== true) {
+      setEmailError(emailValidation);
+    }
+    if (passwordValidation !== true) {
+      setPasswordError(passwordValidation);
+    }
+    if (emailValidation !== true || passwordValidation !== true) {
+      return;
+    }
+
+    try {
+      await dispatch(login({ email, password })).unwrap();
+      console.log('Токен:', localStorage.getItem('token'));
+      await dispatch(fetchUserData(token));
+    } catch (err) {
+      console.error('Ошибка при входе:', err);
+    }
   };
 
   return (
@@ -32,7 +51,7 @@ const AuthLogin = () => {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <span className="error-span"></span>
+        <span className="error-span">{emailError}</span>
 
         <span>Введите пароль</span>
         <input
@@ -42,12 +61,15 @@ const AuthLogin = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <span className="error-span" onClick={fetchData}>{`${error}`}</span>
+        <span className="error-span">{passwordError}</span>
       </div>
-
-      <button disabled={status === 'loading'} onClick={handleLogin}>
-        {status === 'loading' ? 'Загрузка...' : 'Войти'}
+      <button
+        disabled={status === 'loading' || password === '' || email === ''}
+        className={status === 'loading' || password === '' || email === '' ? 'disabled-btn' : ''}
+        onClick={handleLogin}>
+        Войти
       </button>
+      <span className="server-error">{error}</span>
     </div>
   );
 };

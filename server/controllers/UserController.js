@@ -19,14 +19,15 @@ export const register = async (req, res) => {
       username: req.body.username,
       email: req.body.email,
       password: hashedPassword,
-      role: req.body.role,
-      image_url: req.body.image_url || 'undefined',
+      role: req.body.role || 'student',
+      imageUrl: req.body.image_url || 'undefined',
     });
 
-    const token = jwt.sign({ _id: user.id, _role: user.role }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ _id: newUser.id, _role: newUser.role }, process.env.JWT_SECRET, {
       expiresIn: '30d',
     });
 
+    console.log('Пользователь зарегистрирован: ', newUser.email);
     res
       .status(201)
       .json({ message: 'Пользователь успешно зарегистрирован', userId: newUser.id, token: token });
@@ -51,9 +52,11 @@ export const login = async (req, res) => {
       expiresIn: '30d',
     });
 
+    console.log('Пользователь вошел: ', user.email);
     //res.set('Authorization', `Bearer ${token}`);
     res.status(200).json({
-      user: { id: user.id, email: user.email, role: user.role, token: token },
+      user: { id: user.id, email: user.email, role: user.role },
+      token: token,
       message: 'Успешный вход',
     });
   } catch (err) {
@@ -73,6 +76,8 @@ export const getMe = async (req, res) => {
     }
 
     const { password, ...userData } = user.dataValues;
+
+    console.log('Пользователь получает данные: ', user.email);
     res.json(userData);
   } catch (err) {
     console.log(err);

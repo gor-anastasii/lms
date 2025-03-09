@@ -1,9 +1,10 @@
 import React from 'react';
+import { formatDate } from '../../utils/formatDate.js';
 
-const CoursePreview = () => {
+const CoursePreview = ({ title, description, topic, imageUrl, tags, update }) => {
   return (
     <div className="course-info">
-      <img src="/img/img-course.jpg" alt="course-img" />
+      <img src={imageUrl} alt="course-img" />
 
       <div className="course-info-block">
         <div className="course-parts-rating">
@@ -44,27 +45,23 @@ const CoursePreview = () => {
           </div>
         </div>
 
-        <h3>Full Stack Project</h3>
-        <p>
-          QMM/Quality Motion Music offers exclusive extended tracks and remixes by The Weeknd.
-          Immerse yourself in the deep, atmospheric soundscapes of your favorite songs and discover
-          new dimensions of music.
-        </p>
+        <h3>{title}</h3>
+        <p>{description}</p>
 
-        <div className="course-info-tags">
-          <div className="course-tag">
-            <span>NodeJs</span>
+        {tags.length > 0 && (
+          <div className="course-info-tags">
+            {tags.map((tag) => {
+              return (
+                <div className="course-tag">
+                  <span>{tag.name}</span>
+                </div>
+              );
+            })}
           </div>
-          <div className="course-tag">
-            <span>React</span>
-          </div>
-          <div className="course-tag">
-            <span>MERN</span>
-          </div>
-        </div>
+        )}
 
         <div className="course-topic">
-          <span>Computer Science</span>
+          <span>{topic}</span>
         </div>
 
         <div className="course-generate">
@@ -111,7 +108,7 @@ const CoursePreview = () => {
               <path d="M16 18h.01"></path>
             </svg>
 
-            <span>Последнее обновление от 14 февраля, 2025</span>
+            <span>Последнее обновление от {formatDate(update)}</span>
           </div>
         </div>
 

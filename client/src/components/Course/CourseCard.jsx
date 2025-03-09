@@ -1,16 +1,16 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
 
-const CourseCard = ({ id }) => {
+const CourseCard = ({ id, title, imageUrl, topic, averageRating }) => {
   const navigate = useNavigate();
 
   return (
     <div className="course-card" onClick={() => navigate(`/course/${id}`)}>
-      <img src="/img/images.jpg" alt="course-preview" />
+      <img src={imageUrl} alt="course-preview" />
 
       <div className="course-card-info">
-        <p>Full Stack Project</p>
-        <span className="course-card-topic">Computer Science</span>
+        <p>{title}</p>
+        <span className="course-card-topic">{topic}</span>
 
         <div className="course-parts-rating">
           <div className="course-card-parts">
@@ -45,7 +45,7 @@ const CourseCard = ({ id }) => {
               />
             </svg>
 
-            <span>4.5</span>
+            <span>{averageRating}</span>
           </div>
         </div>
         <div className="course-card-price">

@@ -8,6 +8,7 @@ export const register = createAsyncThunk('auth/register', async (userData) => {
 
 export const login = createAsyncThunk('auth/login', async (userData) => {
   const data = await loginUser(userData);
+  console.log('Ответ от API:', data);
   return data;
 });
 
@@ -52,7 +53,7 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.user = action.payload.user;
-        state.token = action.payload.user.token;
+        state.token = action.payload.token;
         localStorage.setItem('token', action.payload.token);
       })
       .addCase(login.rejected, (state, action) => {

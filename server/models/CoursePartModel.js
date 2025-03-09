@@ -13,8 +13,9 @@ const CoursePart = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    video_url: {
+    videoUrl: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
     order: {
       type: DataTypes.INTEGER,
@@ -25,6 +26,6 @@ const CoursePart = sequelize.define(
     timestamps: true,
   },
 );
-CoursePart.belongsTo(Course, { foreignKey: 'course_id' });
+CoursePart.belongsTo(Course, { foreignKey: 'courseId' });
 
 export default CoursePart;

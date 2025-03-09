@@ -9,13 +9,14 @@ const Progress = sequelize.define(
     progress: {
       type: DataTypes.FLOAT,
       defaultValue: 0,
+      allowNull: false,
     },
   },
   {
     timestamps: true,
   },
 );
-Progress.belongsTo(User, { foreignKey: 'user_id' });
-Progress.belongsTo(Course, { foreignKey: 'course_id' });
+Progress.belongsTo(User, { foreignKey: 'userId' });
+Progress.belongsTo(Course, { foreignKey: 'courseId' });
 
 export default Progress;

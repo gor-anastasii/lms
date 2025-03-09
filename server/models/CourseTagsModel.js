@@ -6,24 +6,26 @@ import Tag from './TagModel.js';
 const CourseTag = sequelize.define(
   'CourseTag',
   {
-    course_id: {
+    courseId: {
       type: DataTypes.INTEGER,
       references: {
         model: Course,
         key: 'id',
       },
+      allowNull: false,
     },
-    tag_id: {
+    tagId: {
       type: DataTypes.INTEGER,
       references: {
         model: Tag,
         key: 'id',
       },
+      allowNull: false,
     },
   },
   {
     timestamps: false,
-    primaryKey: ['course_id', 'tag_id'],
+    primaryKey: ['courseId', 'tagId'],
   },
 );
 

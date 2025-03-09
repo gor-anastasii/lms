@@ -123,4 +123,18 @@
       background-color: #b471c5ce;
     }
   }
+
+  .disabled-btn {
+    cursor: default;
+    background-color: #737373;
+
+    &:hover {
+      background-color: #737373;
+    }
+  }
+
+  .server-error {
+    font-size: 12px;
+    color: rgb(255, 108, 108);
+  }
 }

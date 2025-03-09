@@ -33,3 +33,18 @@ main {
   margin-left: 255px;
   margin-top: 78px;
 }
+
+.notfoundpage {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 14px;
+
+  h1 {
+    font-size: 30px;
+    color: #f3f3f3;
+  }
+}

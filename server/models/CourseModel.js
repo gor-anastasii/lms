@@ -16,30 +16,35 @@ const Course = sequelize.define(
     },
     description: {
       type: DataTypes.TEXT,
-      allowNull: true,
+      allowNull: false,
     },
-    teacher_id: {
+    teacherId: {
       type: DataTypes.INTEGER,
       references: {
         model: User,
         key: 'id',
       },
+      allowNull: false,
     },
     price: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    topic: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
     status: {
       type: DataTypes.ENUM('active', 'inactive'),
       allowNull: false,
     },
-    image_url: {
+    imageUrl: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    average_rating: {
+    averageRating: {
       type: DataTypes.FLOAT,
-      allowNull: true,
+      allowNull: false,
     },
   },
   {
@@ -47,6 +52,6 @@ const Course = sequelize.define(
   },
 );
 
-Course.belongsTo(User, { foreignKey: 'teacher_id' });
+Course.belongsTo(User, { foreignKey: 'teacherId' });
 
 export default Course;

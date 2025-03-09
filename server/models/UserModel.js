@@ -7,7 +7,6 @@ const User = sequelize.define(
     username: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
     },
     email: {
       type: DataTypes.STRING,
@@ -22,9 +21,9 @@ const User = sequelize.define(
       type: DataTypes.ENUM('student', 'teacher', 'admin'),
       allowNull: false,
     },
-    image_url: {
+    imageUrl: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
   },
   {

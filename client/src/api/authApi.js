@@ -20,13 +20,10 @@ export const registerUser = async (userData) => {
 export const loginUser = async (userData) => {
   try {
     const response = await axios.post(`${API_URL}/login`, userData, { withCredentials: true });
-    console.log(response);
-
     return response.data;
   } catch (error) {
-    console.log(error.message);
     if (error.response) {
-      throw new Error(error.response.data[0].msg || 'Ошибка входа');
+      throw new Error('Ошибка входа');
     } else if (error.request) {
       throw new Error('Нет ответа от сервера');
     } else {
@@ -37,7 +34,7 @@ export const loginUser = async (userData) => {
 
 export const fetchUser = async (tokenUser) => {
   const token = localStorage.getItem('token') || tokenUser;
-  console.log('tokennn ', tokenUser);
+
   try {
     const response = await axios.get(
       `${API_URL}/me`,

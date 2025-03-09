@@ -11,19 +11,21 @@ const Review = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    user_id: {
+    userId: {
       type: DataTypes.INTEGER,
       references: {
         model: User,
         key: 'id',
       },
+      allowNull: false,
     },
-    course_id: {
+    courseId: {
       type: DataTypes.INTEGER,
       references: {
         model: Course,
         key: 'id',
       },
+      allowNull: false,
     },
     rating: {
       type: DataTypes.INTEGER,
@@ -35,7 +37,7 @@ const Review = sequelize.define(
     },
     comment: {
       type: DataTypes.TEXT,
-      allowNull: true,
+      allowNull: false,
     },
   },
   {
@@ -43,7 +45,7 @@ const Review = sequelize.define(
   },
 );
 
-Review.belongsTo(User, { foreignKey: 'user_id' });
-Review.belongsTo(Course, { foreignKey: 'course_id' });
+Review.belongsTo(User, { foreignKey: 'userId' });
+Review.belongsTo(Course, { foreignKey: 'courseId' });
 
 export default Review;
