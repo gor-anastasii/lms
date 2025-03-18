@@ -1,6 +1,6 @@
 import React from 'react';
 
-const SettingsDelPopup = ({ active, onClose }) => {
+const SettingsDelPopup = ({ active, onClose, onDelete }) => {
   return (
     <div className={`overlay ${active ? 'overlay-active' : ''}`} onClick={onClose}>
       <div className="settings-del-popup">
@@ -31,7 +31,9 @@ const SettingsDelPopup = ({ active, onClose }) => {
         </p>
         <div className="del-popup-btns">
           <button>Отменить</button>
-          <button className="del-btn-popup">Да, я удаляю аккаунт навсегда</button>
+          <button className="del-btn-popup" onClick={onDelete}>
+            Да, я удаляю аккаунт навсегда
+          </button>
         </div>
       </div>
     </div>

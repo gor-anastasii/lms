@@ -2,16 +2,39 @@ import { Op, Sequelize } from 'sequelize';
 
 import Course from '../models/CourseModel.js';
 import Tag from '../models/TagModel.js';
+import User from '../models/UserModel.js';
+import Progress from '../models/ProgressModel.js';
 
 export const getAllCourses = async (req, res) => {
+  const userId = req.userId;
   try {
     const courses = await Course.findAll({
-      include: {
-        model: Tag,
-        through: { attributes: [] },
-      },
+      include: [
+        {
+          model: Tag,
+          through: { attributes: [] },
+        },
+        {
+          model: User,
+          attributes: ['username'],
+        },
+        {
+          model: Progress,
+          where: { userId: userId },
+          required: false,
+          attributes: ['progress'],
+        },
+      ],
     });
-    res.status(200).json(courses);
+
+    const coursesWithProgress = courses.map((course) => {
+      const progressEntry = course.Progress ? course.Progress.progress : null;
+      return {
+        ...course.toJSON(),
+        progress: progressEntry,
+      };
+    });
+    res.status(200).json(coursesWithProgress);
   } catch (err) {
     console.error('Ошибка при получении данных о курсах: ', err);
     res.status(500).json({ message: 'Внутренняя ошибка сервера' });
@@ -142,7 +165,7 @@ export const searchCourses = async (req, res) => {
   }
 
   try {
-    const lowerQuery = query.toLowerCase(); // Приводим запрос к нижнему регистру
+    const lowerQuery = query.toLowerCase();
 
     const courses = await Course.findAll({
       where: {

@@ -16,10 +16,15 @@ const Header = () => {
   //const { user } = useSelector((state) => state.auth);
 
   const isAuth = ['/auth/signin', '/auth/signup'].includes(location.pathname);
-  const isInputHere =
-    /^\/course\/\d+$/.test(location.pathname) || ['/settings/general'].includes(location.pathname);
+  const isNotInputHere = !(
+    /^\/course\/\d+$/.test(location.pathname) ||
+    /^\/course\/\d+\/\d+$/.test(location.pathname) ||
+    ['/settings/general'].includes(location.pathname)
+  );
 
-  const isBtnBack = ['/settings/general'].includes(location.pathname);
+  const isBtnBack =
+    /^\/course\/\d+\/\d+$/.test(location.pathname) ||
+    ['/settings/general'].includes(location.pathname);
 
   const handleSearch = (event) => {
     const query = event.target.value;
@@ -41,7 +46,7 @@ const Header = () => {
 
       {!isAuth && (
         <div className="header-controls">
-          {!isInputHere && (
+          {isNotInputHere && (
             <div className={`header-input ${activeInput ? 'active-input' : ''}`}>
               <img src="/img/search.svg" alt="search" />
               <input

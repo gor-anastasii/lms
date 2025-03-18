@@ -8,5 +8,7 @@ const router = express.Router();
 router.post('/register', reqisterValidation, handleValidations, UserController.register);
 router.post('/login', loginValidation, handleValidations, UserController.login);
 router.get('/me', checkAuth, UserController.getMe);
+router.delete('/me', checkAuth, UserController.deleteUser);
+router.patch('/me/username', checkAuth, UserController.updateUsername);
 
 export default router;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { formatDate } from '../../utils/formatDate.js';
 
-const CoursePreview = ({ title, description, topic, imageUrl, tags, update }) => {
+const CoursePreview = ({ title, description, topic, imageUrl, tags, update, teacherName }) => {
   return (
     <div className="course-info">
       <img src={imageUrl} alt="course-img" />
@@ -81,7 +81,7 @@ const CoursePreview = ({ title, description, topic, imageUrl, tags, update }) =>
               <path d="m8 13 4-7 4 7"></path>
               <path d="M9.1 11h5.7"></path>
             </svg>
-            <span>Автор курса Test Teacher</span>
+            <span>Автор курса {teacherName}</span>
           </div>
 
           <div className="course-last-update">

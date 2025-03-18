@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useSelector } from 'react-redux';
 
-import Navbar from '../components/Navbar';
+import Navbar from '../components/Navbar/Navbar';
 import CoursePreview from '../components/CoursePreview/CoursePreview';
 import Header from '../components/Header/Header';
 import NotFoundPage from './NotFoundPage';
@@ -51,6 +51,7 @@ const CoursePreviewPage = () => {
               imageUrl={currentCourse.imageUrl}
               tags={currentCourse.Tags}
               update={currentCourse.updatedAt}
+              teacherName={currentCourse.User.username}
             />
 
             <div className="course-preview-aside">

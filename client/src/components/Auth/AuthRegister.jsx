@@ -1,11 +1,13 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { register } from '../../redux/slices/authSlice';
+import { register, fetchUserData } from '../../redux/slices/authSlice';
 import { validateEmail, validatePassword, validateUsername } from '../../utils/validations';
+import { useNavigate } from 'react-router';
 
 const AuthRegister = () => {
+  const navigator = useNavigate();
   const dispatch = useDispatch();
-  const { status, error } = useSelector((state) => state.auth);
+  const { status, error, token } = useSelector((state) => state.auth);
 
   const [username, setUsername] = React.useState('');
   const [email, setEmail] = React.useState('');
@@ -38,8 +40,9 @@ const AuthRegister = () => {
     }
 
     try {
-      console.log({ username, email, password, role: 'student' });
       await dispatch(register({ username, email, password, role: 'student' })).unwrap();
+      await dispatch(fetchUserData(token));
+      navigator('/');
     } catch (err) {
       console.error('Ошибка при регистрации:', err);
     }

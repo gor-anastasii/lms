@@ -1,10 +1,48 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import SettingsImgPopup from './SettingsImgPopup';
 import SettingsDelPopup from './SettingsDelPopup';
+import { formatDateTime } from '../../utils/formatDate';
+import { deleteUserAccount, updateUsernameFunc } from '../../redux/slices/authSlice';
+import { validateUsername } from '../../utils/validations';
 
 const Settings = () => {
+  const { user, token } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const [isImgPopupVisible, setIsImgPopupVisible] = React.useState(false);
   const [isDelPopupVisible, setIsDelPopupVisible] = React.useState(false);
+  const [usernameError, setUsernameError] = React.useState('');
+  const [nameValueInput, setNameValueInput] = React.useState(user.username);
+  console.log(user);
+
+  const handleInput = (e) => {
+    setNameValueInput(e.target.value);
+  };
+
+  const handleDeleteUser = async () => {
+    try {
+      await dispatch(deleteUserAccount(token));
+      setIsDelPopupVisible(false);
+    } catch (error) {
+      console.error('Ошибка при удалении аккаунта:', error);
+    }
+  };
+
+  const handleSaveUsername = async () => {
+    setUsernameError('');
+    const usernameValidation = validateUsername(nameValueInput);
+
+    if (usernameValidation !== true) {
+      setUsernameError(usernameValidation);
+      return;
+    }
+
+    try {
+      await dispatch(updateUsernameFunc({ token, username: nameValueInput }));
+    } catch (error) {
+      console.error('Ошибка при обновлении имени пользователя:', error);
+    }
+  };
 
   return (
     <>
@@ -12,20 +50,28 @@ const Settings = () => {
         <h2>Общие настройки</h2>
 
         <h3>Информация об аккаунте</h3>
-        <p>Последнее обновление от 20 февраля 2025, 16:04</p>
+        <p>Последнее обновление от {formatDateTime(user.updatedAt)}</p>
 
         <div className="settings-user-info">
           <div
             className="settings-img"
-            style={{ backgroundImage: 'url(/img/user.jpg)' }}
+            style={{
+              backgroundImage: `url(${
+                user.imageUrl !== 'undefined' ? user.imageUrl : '/img/default-user.svg'
+              })`,
+            }}
             onClick={() => setIsImgPopupVisible(true)}></div>
 
           <div className="settings-user-data">
             <span>Имя пользователя</span>
-            <input type="text" value="Nastya Gorodilina" />
+            <div className="nameChangeInput">
+              <input type="text" value={nameValueInput} onChange={handleInput} />
+              <button onClick={handleSaveUsername}>Сохранить</button>
+            </div>
+            <span className="error-span">{usernameError}</span>
 
             <span>Email</span>
-            <input type="text" value="nastenas714@gmail.com" disabled />
+            <input type="text" value={user.email} disabled />
           </div>
         </div>
 
@@ -55,6 +101,7 @@ const Settings = () => {
 
         {isDelPopupVisible && (
           <SettingsDelPopup
+            onDelete={handleDeleteUser}
             active={isDelPopupVisible}
             onClose={() => setIsDelPopupVisible(false)}
           />

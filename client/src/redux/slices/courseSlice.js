@@ -9,8 +9,9 @@ import {
   searchCourses,
 } from '../../api/courseApi.js';
 
-export const loadCourses = createAsyncThunk('courses/load', async () => {
-  const data = await fetchCourses();
+export const loadCourses = createAsyncThunk('courses/load', async (userData) => {
+  await new Promise((resolve) => setTimeout(resolve, 1500));
+  const data = await fetchCourses(userData);
   return data;
 });
 

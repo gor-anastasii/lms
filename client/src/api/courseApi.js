@@ -2,9 +2,19 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:8080/courses';
 
-export const fetchCourses = async () => {
+export const fetchCourses = async (tokenUser) => {
+  const token = localStorage.getItem('token') || tokenUser;
   try {
-    const response = await axios.get(API_URL);
+    const response = await axios.get(
+      `${API_URL}/`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+      { withCredentials: true },
+    );
+    console.log(response.data);
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Ошибка получения курсов');

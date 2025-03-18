@@ -1,28 +1,38 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
+import { logout } from '../../redux/slices/authSlice';
+
 const HeaderPopup = ({ activePopup, closePopup }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const { totalProgress } = useSelector((state) => state.progress);
 
   const onBtnClick = (route) => {
+    if (route === '/auth/signin') {
+      dispatch(logout());
+    }
     navigate(route);
     closePopup();
   };
+
   return (
     <div className={`overlay ${activePopup ? 'overlay-active' : ''}`} onClick={closePopup}>
       <div className={`header-user-popup ${activePopup ? 'header-user-popup-active' : ''}`}>
         <div className="user-info">
-          <p>Nastya Gorofilina</p>
-          <span className="role">Ученик</span>
-          <span сlassName="email">nastenas714@gmail.com</span>
+          <p>{user.username}</p>
+          <span className="role">{user.role}</span>
+          <span сlassName="email">{user.email}</span>
         </div>
 
         <div className="user-progress">
           <div className="user-progress-data">
             <span>Прогресс</span>
-            <span>20/80</span>
+            <span>{totalProgress}/100</span>
           </div>
           <div className="user-progressbar">
-            <div></div>
+            <div style={{ width: `${totalProgress}%` }}></div>
           </div>
         </div>
 

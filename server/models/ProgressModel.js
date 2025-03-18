@@ -11,12 +11,30 @@ const Progress = sequelize.define(
       defaultValue: 0,
       allowNull: false,
     },
+    completedParts: {
+      type: DataTypes.ARRAY(DataTypes.INTEGER),
+      allowNull: true,
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: User,
+        key: 'id',
+      },
+      allowNull: false,
+    },
+    courseId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: Course,
+        key: 'id',
+      },
+      allowNull: false,
+    },
   },
   {
     timestamps: true,
   },
 );
-Progress.belongsTo(User, { foreignKey: 'userId' });
-Progress.belongsTo(Course, { foreignKey: 'courseId' });
 
 export default Progress;

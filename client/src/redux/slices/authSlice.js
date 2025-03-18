@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { registerUser, loginUser, fetchUser } from '../../api/authApi';
+import { registerUser, loginUser, fetchUser, deleteUser, updateUsername } from '../../api/authApi';
 
 export const register = createAsyncThunk('auth/register', async (userData) => {
   const data = await registerUser(userData);
@@ -8,7 +8,6 @@ export const register = createAsyncThunk('auth/register', async (userData) => {
 
 export const login = createAsyncThunk('auth/login', async (userData) => {
   const data = await loginUser(userData);
-  console.log('Ответ от API:', data);
   return data;
 });
 
@@ -16,6 +15,19 @@ export const fetchUserData = createAsyncThunk('auth/me', async (tokenUser) => {
   const data = await fetchUser(tokenUser);
   return data;
 });
+
+export const deleteUserAccount = createAsyncThunk('auth/deleteUser', async (tokenUser) => {
+  const data = await deleteUser(tokenUser);
+  return data;
+});
+
+export const updateUsernameFunc = createAsyncThunk(
+  'auth/updateUsername',
+  async ({ token, username }) => {
+    const data = await updateUsername(token, username);
+    return data;
+  },
+);
 
 const authSlice = createSlice({
   name: 'auth',
@@ -61,7 +73,33 @@ const authSlice = createSlice({
         state.error = action.error.message;
       })
       .addCase(fetchUserData.fulfilled, (state, action) => {
-        state.user = action.payload;
+        state.user = action.payload.userData;
+        state.token = action.payload.token;
+        localStorage.setItem('token', action.payload.token);
+      })
+      .addCase(deleteUserAccount.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(deleteUserAccount.fulfilled, (state) => {
+        state.status = 'succeeded';
+        state.user = null;
+        state.token = null;
+        localStorage.removeItem('token');
+      })
+      .addCase(deleteUserAccount.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      .addCase(updateUsernameFunc.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateUsernameFunc.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.user.username = action.payload.username;
+      })
+      .addCase(updateUsernameFunc.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
       });
   },
 });

@@ -52,6 +52,44 @@
         margin-bottom: 6px;
       }
 
+      .error-span {
+        margin-top: 4px;
+        color: rgb(255, 108, 108);
+        font-size: 12px;
+        font-weight: 400;
+        margin-bottom: 18px;
+      }
+
+      .nameChangeInput {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
+
+        input {
+          margin-bottom: 2px;
+        }
+
+        button {
+          cursor: pointer;
+          padding: 11px 14px;
+          border-radius: 6px;
+          border: none;
+          background-color: #eeeeee;
+          transition: all 0.3s ease-in-out;
+          color: #0a0a0a;
+          margin-bottom: 2px;
+
+          &:hover {
+            background-color: #d6d6d6;
+          }
+
+          &:active {
+            background-color: #f1f1f1;
+          }
+        }
+      }
+
       input {
         padding: 10px 14px;
         border: 1px solid #e0e0e0;

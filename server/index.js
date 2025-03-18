@@ -13,25 +13,37 @@ import Review from './models/ReviewModel.js';
 
 import authRouter from './routes/authRoutes.js';
 import courseRouter from './routes/courseRoutes.js';
+import progressRouter from './routes/progressRoutes.js';
+import coursePartRouter from './routes/coursePartRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
 Course.belongsToMany(Tag, { through: CourseTag, foreignKey: 'courseId' });
 Tag.belongsToMany(Course, { through: CourseTag, foreignKey: 'tagId' });
+Review.belongsTo(User, { foreignKey: 'userId', onDelete: 'CASCADE' });
+Progress.belongsTo(User, { foreignKey: 'userId', onDelete: 'CASCADE' });
+Progress.belongsTo(User, { foreignKey: 'userId' });
+Progress.belongsTo(Course, { foreignKey: 'courseId' });
+
+Course.belongsTo(User, { foreignKey: 'teacherId' });
+Course.hasMany(Progress, { foreignKey: 'courseId' });
 
 dotenv.config();
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
     allowedHeaders: ['Authorization', 'Content-Type'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true,
   }),
 );
+
 app.use(express.json());
 app.use('/auth', authRouter);
 app.use('/courses', courseRouter);
+app.use('/progress', progressRouter);
+app.use('/course-parts', coursePartRouter);
 
 app.get('/', (req, res) => res.send({ msg: 'hello from server' }));
 

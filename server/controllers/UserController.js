@@ -20,7 +20,7 @@ export const register = async (req, res) => {
       email: req.body.email,
       password: hashedPassword,
       role: req.body.role || 'student',
-      imageUrl: req.body.image_url || 'undefined',
+      imageUrl: req.body.image_url || '/img/default-user.svg',
     });
 
     const token = jwt.sign({ _id: newUser.id, _role: newUser.role }, process.env.JWT_SECRET, {
@@ -78,11 +78,51 @@ export const getMe = async (req, res) => {
     const { password, ...userData } = user.dataValues;
 
     console.log('Пользователь получает данные: ', user.email);
-    res.json(userData);
+    res.json({ userData, token: req.token });
   } catch (err) {
     console.log(err);
     res.status(500).json({
       message: 'Нет доступа',
     });
+  }
+};
+
+export const deleteUser = async (req, res) => {
+  const userId = req.userId;
+
+  try {
+    const deletedUser = await User.destroy({ where: { id: userId } });
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: 'Пользователь не найден' });
+    }
+
+    res.status(200).json({ message: 'Пользователь и его данные успешно удалены' });
+  } catch (err) {
+    console.error(`Ошибка при удалении пользователя: ${err}`);
+    res.status(500).json({ message: 'Ошибка при удалении пользователя' });
+  }
+};
+
+export const updateUsername = async (req, res) => {
+  const userId = req.userId;
+  const { username } = req.body;
+
+  try {
+    const user = await User.findOne({ where: { id: userId } });
+    if (!user) {
+      return res.status(404).json({ message: 'Пользователь не найден' });
+    }
+
+    user.username = username;
+    await user.save();
+
+    console.log('Имя пользователя обновлено: ', user.email);
+    res
+      .status(200)
+      .json({ message: 'Имя пользователя успешно обновлено', username: user.username });
+  } catch (err) {
+    console.error(`Ошибка при обновлении имени пользователя: ${err}`);
+    res.status(500).json({ message: 'Ошибка при обновлении имени пользователя' });
   }
 };

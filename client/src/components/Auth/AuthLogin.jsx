@@ -2,8 +2,10 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, fetchUserData } from '../../redux/slices/authSlice';
 import { validateEmail, validatePassword } from '../../utils/validations';
+import { useNavigate } from 'react-router';
 
 const AuthLogin = () => {
+  const navigator = useNavigate();
   const dispatch = useDispatch();
   const { status, error, token } = useSelector((state) => state.auth);
 
@@ -31,6 +33,7 @@ const AuthLogin = () => {
 
     try {
       await dispatch(login({ email, password })).unwrap();
+      navigator('/');
       console.log('Токен:', localStorage.getItem('token'));
       await dispatch(fetchUserData(token));
     } catch (err) {

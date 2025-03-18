@@ -4,6 +4,7 @@
 @import 'auth.scss';
 @import 'coursepreview.scss';
 @import 'settings.scss';
+@import 'coursepart.scss';
 
 * {
   margin: 0;
@@ -34,6 +35,12 @@ main {
   margin-top: 78px;
 }
 
+.course-part-content {
+  width: calc(100vw - 305px);
+  margin-left: 305px;
+  padding: 0;
+}
+
 .notfoundpage {
   width: 100vw;
   height: 100vh;
@@ -44,7 +51,38 @@ main {
   gap: 14px;
 
   h1 {
-    font-size: 30px;
-    color: #f3f3f3;
+    font-size: 148px;
+    color: #cb91d9;
   }
+
+  p {
+    font-size: 16px;
+    color: #737373;
+    margin-bottom: 8px;
+  }
+
+  button {
+    cursor: pointer;
+    padding: 14px 50px;
+    border-radius: 8px;
+    border: none;
+    background-color: #e0e0e0;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      background-color: #c4c4c4;
+    }
+    &:active {
+      background-color: #f0f0f0;
+    }
+  }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }

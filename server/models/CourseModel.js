@@ -52,6 +52,4 @@ const Course = sequelize.define(
   },
 );
 
-Course.belongsTo(User, { foreignKey: 'teacherId' });
-
 export default Course;
