@@ -16,7 +16,7 @@ export const fetchCoursePartsInfo = async (tokenUser, courseId) => {
       { withCredentials: true },
     );
 
-    return response.data;
+    return response;
   } catch (error) {
     if (error.response) {
       throw new Error(error.response.data.message || 'Ошибка получения данных прогресса');

@@ -15,6 +15,7 @@ import authRouter from './routes/authRoutes.js';
 import courseRouter from './routes/courseRoutes.js';
 import progressRouter from './routes/progressRoutes.js';
 import coursePartRouter from './routes/coursePartRoutes.js';
+import reviewRouter from './routes/reviewRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -28,6 +29,8 @@ Progress.belongsTo(Course, { foreignKey: 'courseId' });
 
 Course.belongsTo(User, { foreignKey: 'teacherId' });
 Course.hasMany(Progress, { foreignKey: 'courseId' });
+Course.hasMany(CoursePart, { foreignKey: 'courseId' });
+Course.hasMany(Review, { foreignKey: 'courseId' });
 
 dotenv.config();
 app.use(
@@ -44,6 +47,7 @@ app.use('/auth', authRouter);
 app.use('/courses', courseRouter);
 app.use('/progress', progressRouter);
 app.use('/course-parts', coursePartRouter);
+app.use('/review', reviewRouter);
 
 app.get('/', (req, res) => res.send({ msg: 'hello from server' }));
 

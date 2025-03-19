@@ -73,3 +73,19 @@ export const searchCourses = async (query) => {
     throw new Error(error.response?.data?.message || 'Ошибка поиска курсов');
   }
 };
+
+export const fetchCourseDetails = async (courseId, tokenUser) => {
+  const token = localStorage.getItem('token') || tokenUser;
+
+  try {
+    const response = await axios.get(`${API_URL}/details?courseId=${courseId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Ошибка получения деталей курса');
+  }
+};

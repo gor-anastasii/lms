@@ -4,6 +4,7 @@ import Course from '../models/CourseModel.js';
 import Tag from '../models/TagModel.js';
 import User from '../models/UserModel.js';
 import Progress from '../models/ProgressModel.js';
+import CoursePart from '../models/CoursePartModel.js';
 
 export const getAllCourses = async (req, res) => {
   const userId = req.userId;
@@ -198,5 +199,45 @@ export const searchCourses = async (req, res) => {
   } catch (err) {
     console.error('Ошибка при поиске курсов: ', err);
     res.status(500).json({ message: 'Внутренняя ошибка сервера' });
+  }
+};
+
+export const getCourseDetails = async (req, res) => {
+  const { courseId } = req.query;
+  const userId = req.userId;
+
+  try {
+    const progressEntry = await Progress.findOne({
+      where: { userId, courseId },
+      attributes: ['progress', 'completedParts'],
+    });
+
+    const course = await Course.findOne({
+      where: { id: courseId },
+      include: [
+        {
+          model: CoursePart,
+          where: { status: 'active' },
+          order: [['order', 'ASC']],
+        },
+      ],
+    });
+
+    if (!course) {
+      return res.status(404).json({ message: 'Курс не найден' });
+    }
+
+    return res.status(200).json({
+      course: course.toJSON(),
+      progress: progressEntry
+        ? {
+            progress: progressEntry.progress,
+            completedParts: progressEntry.completedParts,
+          }
+        : null,
+    });
+  } catch (error) {
+    console.error('Ошибка при получении деталей курса:', error);
+    return res.status(500).json({ message: 'Ошибка при получении деталей курса' });
   }
 };

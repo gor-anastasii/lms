@@ -18,12 +18,12 @@ const Header = () => {
   const isAuth = ['/auth/signin', '/auth/signup'].includes(location.pathname);
   const isNotInputHere = !(
     /^\/course\/\d+$/.test(location.pathname) ||
-    /^\/course\/\d+\/\d+$/.test(location.pathname) ||
+    /^\/course\/\d+\/parts$/.test(location.pathname) ||
     ['/settings/general'].includes(location.pathname)
   );
 
   const isBtnBack =
-    /^\/course\/\d+\/\d+$/.test(location.pathname) ||
+    /^\/course\/\d+\/parts$/.test(location.pathname) ||
     ['/settings/general'].includes(location.pathname);
 
   const handleSearch = (event) => {

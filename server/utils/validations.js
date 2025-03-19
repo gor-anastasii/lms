@@ -12,6 +12,11 @@ export const reqisterValidation = [
   body('avatarUrl', 'Неверная ссылка на аватарку').optional().isURL(),
 ];
 
+export const reviewCreateValidation = [
+  body('rating', 'Неверный формат рейтинга').isFloat({ min: 0, max: 5 }),
+  body('comment', 'Введите комментарий').notEmpty(),
+];
+
 // export const postCreateValidation = [
 //     body('title', 'Введите заголовок статьи').isLength({min: 3}).isString(),
 //     body('text', 'Введите тест статьи').isLength({min: 3}).isString(),

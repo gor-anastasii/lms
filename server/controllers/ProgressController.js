@@ -1,4 +1,5 @@
 import Progress from '../models/ProgressModel.js';
+import CoursePart from '../models/CoursePartModel.js';
 
 export const subscribeToCourse = async (req, res) => {
   const { userId, courseId } = req.body;
@@ -26,7 +27,8 @@ export const subscribeToCourse = async (req, res) => {
 };
 
 export const updateProgress = async (req, res) => {
-  const { userId, courseId, currentPartOrder } = req.body;
+  const userId = req.userId;
+  const { courseId, currentPartOrder } = req.body;
 
   try {
     const existingProgress = await Progress.findOne({
@@ -42,13 +44,13 @@ export const updateProgress = async (req, res) => {
     }
 
     if (!existingProgress.completedParts.includes(currentPartOrder)) {
-      existingProgress.completedParts.push(currentPartOrder);
+      existingProgress.completedParts = [...existingProgress.completedParts, currentPartOrder];
     }
 
     const totalParts = await CoursePart.count({ where: { courseId } });
     const completedPartsCount = existingProgress.completedParts.length;
 
-    existingProgress.progress = (completedPartsCount / totalParts) * 100;
+    existingProgress.progress = Math.round((completedPartsCount / totalParts) * 100);
 
     await existingProgress.save();
 

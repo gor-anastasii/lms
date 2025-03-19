@@ -3,7 +3,7 @@ import { fetchCoursePartsInfo } from '../../api/coursePartsApi';
 
 export const fetchCourseParts = createAsyncThunk(
   'courseParts/fetchCourseParts',
-  async (userData, courseId) => {
+  async ({ userData, courseId }) => {
     const response = await fetchCoursePartsInfo(userData, courseId);
     return response.data;
   },

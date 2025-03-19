@@ -56,3 +56,33 @@ export const subscribeToCourse = async (tokenUser, courseId) => {
     }
   }
 };
+
+export const updateCourseProgress = async (courseId, currentPartOrder, tokenUser) => {
+  const token = localStorage.getItem('token') || tokenUser;
+
+  try {
+    const response = await axios.patch(
+      `${API_URL}/`,
+      {
+        courseId: courseId,
+        currentPartOrder: currentPartOrder,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      },
+    );
+
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data.message || 'Ошибка обновления прогресса');
+    } else if (error.request) {
+      throw new Error('Нет ответа от сервера');
+    } else {
+      throw new Error('Ошибка: ' + error.message);
+    }
+  }
+};

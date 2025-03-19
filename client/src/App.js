@@ -59,7 +59,7 @@ function App() {
           path="/settings/general"
           element={token ? <SettingsPage /> : <Navigate to="/auth/signin" />}
         />
-        <Route path="/course/:id/parts/:partId" element={<CoursePartsPage />} />
+        <Route path="/course/:id/parts/" element={<CoursePartsPage />} />
 
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
