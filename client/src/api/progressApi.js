@@ -28,18 +28,41 @@ export const fetchProgressInfo = async (tokenUser) => {
   }
 };
 
+export const fetchProgressForCourse = async (tokenUser) => {
+  const token = localStorage.getItem('token') || tokenUser;
+
+  try {
+    const response = await axios.get(
+      `${API_URL}/`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+      { withCredentials: true },
+    );
+
+    return response;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data.message || 'Ошибка получения данных прогресса');
+    } else if (error.request) {
+      throw new Error('Нет ответа от сервера');
+    } else {
+      throw new Error('Ошибка: ' + error.message);
+    }
+  }
+};
+
 export const subscribeToCourse = async (tokenUser, courseId) => {
   const token = localStorage.getItem('token') || tokenUser;
 
   try {
     const response = await axios.get(
-      `${API_URL}/subscribe`,
+      `${API_URL}/subscribe?courseId=${courseId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
-        },
-        body: {
-          courseId: courseId,
         },
       },
       { withCredentials: true },

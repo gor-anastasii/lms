@@ -2,7 +2,16 @@ import React from 'react';
 import { formatDate } from '../../utils/formatDate.js';
 import { svgIconStart } from '../../utils/svgIcons.js';
 
-const CoursePreview = ({ title, description, topic, imageUrl, tags, update, teacherName }) => {
+const CoursePreview = ({
+  title,
+  description,
+  topic,
+  imageUrl,
+  tags,
+  update,
+  teacherName,
+  rating,
+}) => {
   return (
     <>
       <img src={imageUrl} alt="course-img" />
@@ -32,7 +41,7 @@ const CoursePreview = ({ title, description, topic, imageUrl, tags, update, teac
           <div className="course-card-rating">
             {svgIconStart()}
 
-            <span>4.5</span>
+            <span>{rating}</span>
           </div>
         </div>
 

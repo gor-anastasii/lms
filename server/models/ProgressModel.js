@@ -6,6 +6,11 @@ import Course from './CourseModel.js';
 const Progress = sequelize.define(
   'Progress',
   {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     progress: {
       type: DataTypes.FLOAT,
       defaultValue: 0,

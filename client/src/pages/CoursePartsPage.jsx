@@ -15,7 +15,6 @@ const CoursePartsPage = () => {
   const { token } = useSelector((state) => state.auth);
   const { course, status, progress } = useSelector((state) => state.currentCourse);
   const dispatch = useDispatch();
-
   const [reviewOpen, setReviewOpen] = useState(false);
   const [currentPart, setCurrentPart] = useState(null);
 

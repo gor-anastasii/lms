@@ -5,8 +5,7 @@ import {
   deleteCourse,
   updateCourseStatus,
   updateCourse,
-  filterCourses,
-  searchCourses,
+  fetchCoursesWithSearchFilter,
 } from '../../api/courseApi.js';
 
 export const loadCourses = createAsyncThunk('courses/load', async (userData) => {
@@ -38,15 +37,14 @@ export const editCourse = createAsyncThunk('courses/edit', async ({ id, courseDa
   return data;
 });
 
-export const filterCoursesByTopic = createAsyncThunk('courses/filter', async (topic) => {
-  const data = await filterCourses(topic);
-  return data;
-});
-
-export const searchCoursesByQuery = createAsyncThunk('courses/search', async (query) => {
-  const data = await searchCourses(query);
-  return data;
-});
+export const fetchCoursesSearchFilter = createAsyncThunk(
+  'course/search-filter',
+  async ({ userData, query, topic }) => {
+    const data = await fetchCoursesWithSearchFilter(userData, query, topic);
+    console.log('u: ', userData, ' s: ', query, ' t: ', topic);
+    return data;
+  },
+);
 
 const courseSlice = createSlice({
   name: 'courses',
@@ -54,8 +52,17 @@ const courseSlice = createSlice({
     courses: [],
     status: 'idle',
     error: null,
+    searchQuery: '',
+    filterTopic: '',
   },
-  reducers: {},
+  reducers: {
+    setSearchQuery(state, action) {
+      state.searchQuery = action.payload;
+    },
+    setFilterTopic(state, action) {
+      state.filterTopic = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(loadCourses.pending, (state) => {
@@ -87,13 +94,11 @@ const courseSlice = createSlice({
           state.courses[index] = action.payload;
         }
       })
-      .addCase(filterCoursesByTopic.fulfilled, (state, action) => {
-        state.courses = action.payload;
-      })
-      .addCase(searchCoursesByQuery.fulfilled, (state, action) => {
+      .addCase(fetchCoursesSearchFilter.fulfilled, (state, action) => {
         state.courses = action.payload;
       });
   },
 });
 
+export const { setSearchQuery, setFilterTopic } = courseSlice.actions;
 export default courseSlice.reducer;

@@ -2,7 +2,8 @@ import Progress from '../models/ProgressModel.js';
 import CoursePart from '../models/CoursePartModel.js';
 
 export const subscribeToCourse = async (req, res) => {
-  const { userId, courseId } = req.body;
+  const userId = req.userId;
+  const courseId = req.query.courseId;
 
   try {
     const existingProgress = await Progress.findOne({
@@ -17,6 +18,7 @@ export const subscribeToCourse = async (req, res) => {
       userId,
       courseId,
       progress: 0,
+      completedParts: [],
     });
 
     return res.status(201).json(progress);
@@ -86,6 +88,26 @@ export const getTotalProgress = async (req, res) => {
     });
   } catch (error) {
     console.error('Ошибка при получении общего прогресса:', error);
+    return res.status(500).json({ message: 'Ошибка сервера' });
+  }
+};
+
+export const getProgressForCourses = async (req, res) => {
+  const userId = req.body;
+  try {
+    const progressPerCourse = await Progress.findOne({
+      where: { userId },
+    });
+
+    if (!progressPerCourse) {
+      return res.status(404).json({ message: 'Запись о прогрессе пользователя не найдена' });
+    }
+
+    return res.status(200).json({
+      progress: progressPerCourse,
+    });
+  } catch (err) {
+    console.error('Ошибка при получении прогресса:', error);
     return res.status(500).json({ message: 'Ошибка сервера' });
   }
 };

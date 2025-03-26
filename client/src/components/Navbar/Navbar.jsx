@@ -1,10 +1,12 @@
 import React from 'react';
+import { useNavigate } from 'react-router';
 
-const Navbar = () => {
+const Navbar = ({ i }) => {
+  const navigator = useNavigate();
   return (
     <nav>
       <ul>
-        <li className="active-nav">
+        <li onClick={() => navigator('/')} className={`${i === 0 ? 'active-nav' : ''}`}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"
@@ -21,7 +23,7 @@ const Navbar = () => {
           </svg>
           <span>Обзор курсов</span>
         </li>
-        <li>
+        <li onClick={() => navigator('/my-progress')} className={`${i === 1 ? 'active-nav' : ''}`}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"
@@ -42,7 +44,7 @@ const Navbar = () => {
           </svg>
           <span>Мой прогресс</span>
         </li>
-        <li>
+        <li className={`${i === 3 ? 'active-nav' : ''}`}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"

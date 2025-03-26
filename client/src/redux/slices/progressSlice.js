@@ -1,5 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchProgressInfo, subscribeToCourse } from '../../api/progressApi';
+import {
+  fetchProgressInfo,
+  subscribeToCourse,
+  fetchProgressForCourse,
+} from '../../api/progressApi';
 
 export const fetchTotalProgress = createAsyncThunk(
   'progress/fetchTotalProgress',
@@ -8,6 +12,12 @@ export const fetchTotalProgress = createAsyncThunk(
     return response;
   },
 );
+
+export const fetchAllProgress = createAsyncThunk('progress/fetchAllProgress', async (userData) => {
+  const responce = await fetchProgressForCourse(userData);
+  console.log(responce);
+  return responce.data;
+});
 
 export const subscribeCourse = createAsyncThunk(
   'progress/subscribeToCOurse',
@@ -23,6 +33,7 @@ const progressSlice = createSlice({
     totalProgress: 0,
     averageProgress: 0,
     totalCourses: 0,
+    allProgress: [],
     status: 'idle',
     error: null,
   },
@@ -41,6 +52,10 @@ const progressSlice = createSlice({
       .addCase(fetchTotalProgress.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
+      })
+      .addCase(fetchAllProgress.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.allProgress = action.payload.progress;
       });
   },
 });

@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { filterCoursesByTopic, loadCourses } from '../redux/slices/courseSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCoursesSearchFilter, loadCourses, setFilterTopic } from '../redux/slices/courseSlice';
 
 const Sortbar = () => {
   const [activeSort, setActiveSort] = useState(0);
   const dispatch = useDispatch();
+
+  const { token } = useSelector((state) => state.auth);
+  const { searchQuery } = useSelector((state) => state.courses);
 
   const sortValue = [
     { value: 'Все', img: null },
@@ -16,10 +19,20 @@ const Sortbar = () => {
 
   const handleFilter = (i, filterValue) => {
     setActiveSort(i);
-    if (filterValue === 'Все') {
-      dispatch(loadCourses());
+    dispatch(setFilterTopic(filterValue));
+    console.log(searchQuery);
+
+    if (filterValue === 'Все' && searchQuery === '') {
+      dispatch(loadCourses(token));
+      dispatch(setFilterTopic(''));
+    } else if (filterValue === 'Все' && searchQuery !== '') {
+      dispatch(setFilterTopic(''));
+      dispatch(fetchCoursesSearchFilter({ userData: token, query: searchQuery, topic: '' }));
     } else {
-      dispatch(filterCoursesByTopic(filterValue));
+      dispatch(setFilterTopic(filterValue));
+      dispatch(
+        fetchCoursesSearchFilter({ userData: token, query: searchQuery, topic: filterValue }),
+      );
     }
   };
 

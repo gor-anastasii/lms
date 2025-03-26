@@ -14,8 +14,11 @@ export const fetchCourses = async (tokenUser) => {
       },
       { withCredentials: true },
     );
-    console.log(response.data);
-    return response.data;
+
+    return response.data.map((course) => ({
+      ...course,
+      progress: course.Progresses.length > 0 ? course.Progresses[0].progress : null,
+    }));
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Ошибка получения курсов');
   }
@@ -56,24 +59,6 @@ export const updateCourse = async (id, courseData) => {
   }
 };
 
-export const filterCourses = async (topic) => {
-  try {
-    const response = await axios.get(`${API_URL}/filter?topic=${topic}`);
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response?.data?.message || 'Ошибка фильтрации курсов');
-  }
-};
-
-export const searchCourses = async (query) => {
-  try {
-    const response = await axios.get(`${API_URL}/search?query=${query}`);
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response?.data?.message || 'Ошибка поиска курсов');
-  }
-};
-
 export const fetchCourseDetails = async (courseId, tokenUser) => {
   const token = localStorage.getItem('token') || tokenUser;
 
@@ -84,8 +69,32 @@ export const fetchCourseDetails = async (courseId, tokenUser) => {
       },
       withCredentials: true,
     });
+
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Ошибка получения деталей курса');
+  }
+};
+
+export const fetchCoursesWithSearchFilter = async (
+  tokenUser,
+  searchQuery = '',
+  filterTopic = 'Все',
+) => {
+  const token = localStorage.getItem('token') || tokenUser;
+  try {
+    console.log('search: ', searchQuery, ' topic: ', filterTopic);
+    const response = await axios.get(
+      `${API_URL}/search-filter?query=${searchQuery}&topic=${filterTopic}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Ошибка получения курсов');
   }
 };

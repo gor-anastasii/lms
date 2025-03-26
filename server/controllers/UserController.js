@@ -30,7 +30,12 @@ export const register = async (req, res) => {
     console.log('Пользователь зарегистрирован: ', newUser.email);
     res
       .status(201)
-      .json({ message: 'Пользователь успешно зарегистрирован', userId: newUser.id, token: token });
+      .json({
+        message: 'Пользователь успешно зарегистрирован',
+        userId: newUser.id,
+        token: token,
+        role: newUser.role,
+      });
   } catch (err) {
     console.error(`Ошибка при регистрации пользователя: ${err}`);
     res.status(500).json({

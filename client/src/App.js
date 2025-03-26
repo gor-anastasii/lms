@@ -10,10 +10,12 @@ import SettingsPage from './pages/SettingsPage';
 import NotFoundPage from './pages/NotFoundPage';
 import { fetchUserData, logout } from './redux/slices/authSlice';
 import CoursePartsPage from './pages/CoursePartsPage';
+import TeacherPage from './pages/TeacherPage';
+import MyProgressPage from './pages/MyProgressPage';
 
 function App() {
   const dispatch = useDispatch();
-  const { token } = useSelector((state) => state.auth);
+  const { token, role } = useSelector((state) => state.auth);
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
@@ -54,12 +56,20 @@ function App() {
       <Routes>
         <Route path="/" element={token ? <AllCoursePage /> : <Navigate to="/auth/signin" />} />
         <Route path="/auth/*" element={<AuthPage />} />
-        <Route path="/course/:id" element={<CoursePreviewPage />} />
+        <Route path="/course/:id" element={<CoursePreviewPage key={'key1'} />} />
         <Route
           path="/settings/general"
           element={token ? <SettingsPage /> : <Navigate to="/auth/signin" />}
         />
         <Route path="/course/:id/parts/" element={<CoursePartsPage />} />
+        <Route
+          path="/teacher-mode"
+          element={role && role === 'teacher' && token ? <TeacherPage /> : <NotFoundPage />}
+        />
+        <Route
+          path="/my-progress"
+          element={token ? <MyProgressPage /> : <Navigate to="/auth/signin" />}
+        />
 
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

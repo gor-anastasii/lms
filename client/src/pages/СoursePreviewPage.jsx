@@ -10,18 +10,32 @@ import NotFoundPage from './NotFoundPage';
 import { svgIconStart } from '../utils/svgIcons';
 
 import { fetchReviews } from '../redux/slices/reviewSlice';
+import { subscribeToCourse } from '../api/progressApi';
 
 const CoursePreviewPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [isLoad, setIsLoad] = React.useState(false);
+
   const { token } = useSelector((state) => state.auth);
   const { reviews, status } = useSelector((state) => state.review);
   const { courses } = useSelector((state) => state.courses);
   const currentCourse = courses.find((course) => course.id === parseInt(id));
 
-  const handleSubscribe = () => {
-    navigate(`/course/${id}/parts`);
+  const handleSubscribe = async () => {
+    setIsLoad(true);
+    try {
+      if (currentCourse.progress === null) {
+        const response = await subscribeToCourse(token, id);
+      }
+      navigate(`/course/${id}/parts`);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoad(false);
+    }
   };
 
   React.useEffect(() => {
@@ -32,7 +46,7 @@ const CoursePreviewPage = () => {
     return <NotFoundPage />;
   }
 
-  if (status === 'loading') {
+  if (status === 'loading' || isLoad) {
     return (
       <div className="loading">
         <ClipLoader color="#cb91d9" loading={true} size={50} />
@@ -66,6 +80,7 @@ const CoursePreviewPage = () => {
 
           <div className="course-content">
             <div className="course-info">
+              {console.log(currentCourse)}
               <CoursePreview
                 title={currentCourse.title}
                 description={currentCourse.description}
@@ -73,6 +88,7 @@ const CoursePreviewPage = () => {
                 imageUrl={currentCourse.imageUrl}
                 tags={currentCourse.Tags}
                 update={currentCourse.updatedAt}
+                rating={currentCourse.averageRating}
                 teacherName={currentCourse.User.username}
               />
 
@@ -108,7 +124,11 @@ const CoursePreviewPage = () => {
                 <p>Отслеживайте свой прогресс, учите новое и жизнь станет лучше!</p>
 
                 <div className="course-payment-btn free-btn" onClick={handleSubscribe}>
-                  <span>Присоединиться бесплатно</span>
+                  <span>
+                    {currentCourse.progress === null
+                      ? 'Присоединиться бесплатно'
+                      : 'Продолжить обучение'}
+                  </span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"

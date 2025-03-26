@@ -34,6 +34,7 @@ const authSlice = createSlice({
   initialState: {
     user: null,
     token: null,
+    role: null,
     status: 'idle',
     error: null,
   },
@@ -52,6 +53,7 @@ const authSlice = createSlice({
       .addCase(register.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.user = action.payload.user;
+        state.role = action.payload.role;
         state.token = action.payload.token;
         localStorage.setItem('token', action.payload.token);
       })
@@ -65,6 +67,7 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.user = action.payload.user;
+        state.role = action.payload.user.role;
         state.token = action.payload.token;
         localStorage.setItem('token', action.payload.token);
       })
@@ -74,6 +77,7 @@ const authSlice = createSlice({
       })
       .addCase(fetchUserData.fulfilled, (state, action) => {
         state.user = action.payload.userData;
+        state.role = action.payload.userData.role;
         state.token = action.payload.token;
         localStorage.setItem('token', action.payload.token);
       })
@@ -83,6 +87,7 @@ const authSlice = createSlice({
       .addCase(deleteUserAccount.fulfilled, (state) => {
         state.status = 'succeeded';
         state.user = null;
+        state.role = null;
         state.token = null;
         localStorage.removeItem('token');
       })

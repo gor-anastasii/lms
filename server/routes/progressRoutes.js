@@ -4,9 +4,10 @@ import { checkAuth } from '../middleware/index.js';
 
 const router = express.Router();
 
-router.post('/subscribe', checkAuth, ProgressController.subscribeToCourse);
+router.get('/subscribe', checkAuth, ProgressController.subscribeToCourse);
 router.patch('/', checkAuth, ProgressController.updateProgress);
 router.get('/total-progress', checkAuth, ProgressController.getTotalProgress);
 router.get('/course-status', checkAuth, ProgressController.getCourseStatus);
+router.get('/', checkAuth, ProgressController.getProgressForCourses);
 
 export default router;

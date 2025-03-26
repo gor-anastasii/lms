@@ -1,6 +1,5 @@
 import React from 'react';
 import Navbar from '../components/Navbar/Navbar';
-import Settings from '../components/Settings/Settings';
 import Header from '../components/Header/Header';
 
 const SettingsPage = () => {
@@ -10,9 +9,7 @@ const SettingsPage = () => {
       <main>
         <Navbar />
 
-        <div className="content">
-          <Settings />
-        </div>
+        <div className="content">nvjrfnvjfnvjfnvjfn</div>
       </main>
     </>
   );

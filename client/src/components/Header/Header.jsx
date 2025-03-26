@@ -2,38 +2,48 @@ import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import HeaderPopup from './HeaderPopup';
 import { useSelector, useDispatch } from 'react-redux';
-import { searchCoursesByQuery, loadCourses } from '../../redux/slices/courseSlice';
+import {
+  fetchCoursesSearchFilter,
+  loadCourses,
+  setSearchQuery,
+} from '../../redux/slices/courseSlice';
 
 const Header = () => {
   const [activePopup, setActivePopup] = React.useState(false);
   const [activeInput, setActiveInput] = React.useState(false);
-  const [searchQuery, setSearchQuery] = React.useState('');
+  const [searchQuery, setSearchQueryInput] = React.useState('');
 
   const location = useLocation();
   const navigator = useNavigate();
   const dispatch = useDispatch();
 
-  //const { user } = useSelector((state) => state.auth);
+  const { token } = useSelector((state) => state.auth);
+  const { filterTopic } = useSelector((state) => state.courses);
 
   const isAuth = ['/auth/signin', '/auth/signup'].includes(location.pathname);
   const isNotInputHere = !(
     /^\/course\/\d+$/.test(location.pathname) ||
     /^\/course\/\d+\/parts$/.test(location.pathname) ||
-    ['/settings/general'].includes(location.pathname)
+    ['/settings/general', '/teacher-mode'].includes(location.pathname)
   );
 
   const isBtnBack =
     /^\/course\/\d+\/parts$/.test(location.pathname) ||
-    ['/settings/general'].includes(location.pathname);
+    ['/settings/general', '/teacher-mode'].includes(location.pathname);
 
   const handleSearch = (event) => {
     const query = event.target.value;
-    setSearchQuery(query);
+    setSearchQueryInput(query);
 
     if (query.trim()) {
-      dispatch(searchCoursesByQuery(query));
-    } else {
-      dispatch(loadCourses());
+      dispatch(setSearchQuery(query));
+      dispatch(fetchCoursesSearchFilter({ userData: token, query: query, topic: filterTopic }));
+    } else if (filterTopic !== '' && query === '') {
+      dispatch(setSearchQuery(''));
+      dispatch(fetchCoursesSearchFilter({ userData: token, query: '', topic: filterTopic }));
+    } else if (filterTopic === '' && query === '') {
+      dispatch(setSearchQuery(''));
+      dispatch(loadCourses(token));
     }
   };
 

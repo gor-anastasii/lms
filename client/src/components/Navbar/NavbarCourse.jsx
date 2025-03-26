@@ -10,7 +10,11 @@ const NavbarCourse = ({ courseInfo, progressInfo, onPartClick, onReviewClick }) 
   const [reviewOpen, setReviewOpen] = useState(false);
 
   const [currentPartIndex, setCurrentPartIndex] = useState(
-    courseInfo.CourseParts.findIndex((part) => !progressInfo.completedParts.includes(part.order)),
+    progressInfo.completedParts.length > 0
+      ? courseInfo.CourseParts.findIndex(
+          (part) => !progressInfo.completedParts.includes(part.order),
+        )
+      : 0,
   );
 
   const handlePartClick = (part, index) => {
@@ -25,6 +29,7 @@ const NavbarCourse = ({ courseInfo, progressInfo, onPartClick, onReviewClick }) 
   };
 
   React.useEffect(() => {
+    console.log(currentPartIndex);
     onPartClick(courseInfo.CourseParts[currentPartIndex]);
   }, []);
 

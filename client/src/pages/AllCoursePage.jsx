@@ -24,7 +24,7 @@ const AllCoursePage = () => {
     <>
       <Header />
       <main>
-        <Navbar />
+        <Navbar i={0} />
 
         <div className="content">
           <Sortbar />
@@ -44,6 +44,7 @@ const AllCoursePage = () => {
                   topic={course.topic}
                   imageUrl={course.imageUrl}
                   averageRating={course.averageRating}
+                  progress={course.progress}
                 />
               ))}
           </div>

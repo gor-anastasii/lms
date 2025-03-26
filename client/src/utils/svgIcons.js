@@ -99,3 +99,57 @@ export const svgIconGarbage = () => (
     />
   </svg>
 );
+
+export const svgIconPlus = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="lucide lucide-circle-plus h-4 w-4 mr-2">
+    <circle cx="12" cy="12" r="10"></circle>
+    <path d="M8 12h8"></path>
+    <path d="M12 8v8"></path>
+  </svg>
+);
+
+export const svgIconSort = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="lucide lucide-arrow-up-down ml-2 h-4 w-4">
+    <path d="m21 16-4 4-4-4"></path>
+    <path d="M17 20V4"></path>
+    <path d="m3 8 4-4 4 4"></path>
+    <path d="M7 4v16"></path>
+  </svg>
+);
+
+export const svgIconEdit = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="lucide lucide-pencil h-4 w-4  mr-2">
+    <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path>
+    <path d="m15 5 4 4"></path>
+  </svg>
+);

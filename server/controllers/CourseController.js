@@ -241,3 +241,67 @@ export const getCourseDetails = async (req, res) => {
     return res.status(500).json({ message: 'Ошибка при получении деталей курса' });
   }
 };
+
+export const getCoursesWithSearchFilter = async (req, res) => {
+  const userId = req.userId;
+  const { query, topic } = req.query;
+
+  try {
+    const whereConditions = {
+      ...(topic && { topic }),
+      ...(query && {
+        [Op.or]: [
+          {
+            [Op.and]: [
+              Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('title')), {
+                [Op.like]: `%${query.toLowerCase()}%`,
+              }),
+            ],
+          },
+          {
+            id: {
+              [Op.in]: Sequelize.literal(`(
+                SELECT "courseId" FROM "CourseTags" WHERE "tagId" IN (
+                  SELECT "id" FROM "Tags" WHERE LOWER(name) LIKE '%${query.toLowerCase()}%'
+                )
+              )`),
+            },
+          },
+        ],
+      }),
+    };
+
+    const courses = await Course.findAll({
+      where: whereConditions,
+      include: [
+        {
+          model: Tag,
+          through: { attributes: [] },
+        },
+        {
+          model: User,
+          attributes: ['username'],
+        },
+        {
+          model: Progress,
+          where: { userId: userId },
+          required: false,
+          attributes: ['progress'],
+        },
+      ],
+    });
+
+    const coursesWithProgress = courses.map((course) => {
+      const progressEntry = course.Progress ? course.Progress.progress : null;
+      return {
+        ...course.toJSON(),
+        progress: progressEntry,
+      };
+    });
+
+    res.status(200).json(coursesWithProgress);
+  } catch (err) {
+    console.error('Ошибка при получении данных о курсах: ', err);
+    res.status(500).json({ message: 'Внутренняя ошибка сервера' });
+  }
+};

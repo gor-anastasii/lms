@@ -26,34 +26,38 @@ const HeaderPopup = ({ activePopup, closePopup }) => {
           <span сlassName="email">{user.email}</span>
         </div>
 
-        <div className="user-progress">
-          <div className="user-progress-data">
-            <span>Прогресс</span>
-            <span>{totalProgress}/100</span>
+        {totalProgress !== null && (
+          <div className="user-progress">
+            <div className="user-progress-data">
+              <span>Прогресс</span>
+              <span>{totalProgress}/100</span>
+            </div>
+            <div className="user-progressbar">
+              <div style={{ width: `${totalProgress}%` }}></div>
+            </div>
           </div>
-          <div className="user-progressbar">
-            <div style={{ width: `${totalProgress}%` }}></div>
-          </div>
-        </div>
+        )}
 
         <div className="header-user-buttons">
-          <button>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="lucide lucide-book-marked h-4 w-4 mr-2">
-              <path d="M10 2v8l3-3 3 3V2"></path>
-              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"></path>
-            </svg>
-            <span>Учитель</span>
-          </button>
+          {user.role === 'teacher' && (
+            <button onClick={() => navigate('/teacher-mode')}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-book-marked h-4 w-4 mr-2">
+                <path d="M10 2v8l3-3 3 3V2"></path>
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"></path>
+              </svg>
+              <span>Учитель</span>
+            </button>
+          )}
 
           <button onClick={() => navigate('/settings/general')}>
             <svg

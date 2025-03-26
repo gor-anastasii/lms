@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router';
 import { svgIconStart } from '../../utils/svgIcons';
 
-const CourseCard = ({ id, title, imageUrl, topic, averageRating }) => {
+const CourseCard = ({ id, title, imageUrl, topic, averageRating, progress }) => {
   const navigate = useNavigate();
 
   return (
@@ -39,9 +39,18 @@ const CourseCard = ({ id, title, imageUrl, topic, averageRating }) => {
             <span>{averageRating}</span>
           </div>
         </div>
-        <div className="course-card-price">
-          <span>Бесплатно</span>
-        </div>
+        {progress === null ? (
+          <div className="course-card-price">
+            <span>Бесплатно</span>
+          </div>
+        ) : (
+          <div className="course-card-progress">
+            <div className="progress-bar">
+              <div style={{ width: `${progress}%` }}></div>
+            </div>
+            <span>{progress}% Пройдено</span>
+          </div>
+        )}
       </div>
     </div>
   );
