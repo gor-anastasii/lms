@@ -53,7 +53,7 @@ app.get('/', (req, res) => res.send({ msg: 'hello from server' }));
 
 const syncDatabase = async () => {
   try {
-    await sequelize.sync({ alter: true });
+    await sequelize.sync();
     console.log('База данных синхронизирована!');
   } catch (error) {
     console.error('Ошибка при синхронизации базы данных:', error);

@@ -7,12 +7,12 @@ const Review = sequelize.define(
   'Review',
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
-      autoIncrement: true,
     },
     userId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       references: {
         model: User,
         key: 'id',
@@ -20,7 +20,7 @@ const Review = sequelize.define(
       allowNull: false,
     },
     courseId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       references: {
         model: Course,
         key: 'id',

@@ -19,20 +19,18 @@ const Sortbar = () => {
 
   const handleFilter = (i, filterValue) => {
     setActiveSort(i);
+    const currentQuery = searchQuery.trim();
     dispatch(setFilterTopic(filterValue));
-    console.log(searchQuery);
+    const fetchParams = { userData: token, query: currentQuery };
 
-    if (filterValue === 'Все' && searchQuery === '') {
-      dispatch(loadCourses(token));
-      dispatch(setFilterTopic(''));
-    } else if (filterValue === 'Все' && searchQuery !== '') {
-      dispatch(setFilterTopic(''));
-      dispatch(fetchCoursesSearchFilter({ userData: token, query: searchQuery, topic: '' }));
+    if (filterValue === 'Все') {
+      if (currentQuery === '') {
+        dispatch(loadCourses(token));
+      } else {
+        dispatch(fetchCoursesSearchFilter({ ...fetchParams, topic: '' }));
+      }
     } else {
-      dispatch(setFilterTopic(filterValue));
-      dispatch(
-        fetchCoursesSearchFilter({ userData: token, query: searchQuery, topic: filterValue }),
-      );
+      dispatch(fetchCoursesSearchFilter({ ...fetchParams, topic: filterValue }));
     }
   };
 

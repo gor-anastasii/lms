@@ -9,6 +9,9 @@ import {
 } from '../../redux/slices/courseSlice';
 
 const Header = () => {
+  const coursePath = /^\/course\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+  const coursePartPath =
+    /^\/course\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/parts$/;
   const [activePopup, setActivePopup] = React.useState(false);
   const [activeInput, setActiveInput] = React.useState(false);
   const [searchQuery, setSearchQueryInput] = React.useState('');
@@ -22,27 +25,28 @@ const Header = () => {
 
   const isAuth = ['/auth/signin', '/auth/signup'].includes(location.pathname);
   const isNotInputHere = !(
-    /^\/course\/\d+$/.test(location.pathname) ||
-    /^\/course\/\d+\/parts$/.test(location.pathname) ||
-    ['/settings/general', '/teacher-mode'].includes(location.pathname)
+    coursePath.test(location.pathname) ||
+    coursePartPath.test(location.pathname) ||
+    location.pathname.startsWith('/teacher-mode') ||
+    ['/settings/general', '/my-progress'].includes(location.pathname)
   );
 
   const isBtnBack =
-    /^\/course\/\d+\/parts$/.test(location.pathname) ||
-    ['/settings/general', '/teacher-mode'].includes(location.pathname);
+    coursePartPath.test(location.pathname) ||
+    ['/settings/general'].includes(location.pathname) ||
+    location.pathname.startsWith('/teacher-mode');
 
   const handleSearch = (event) => {
-    const query = event.target.value;
+    const query = event.target.value.trim();
     setSearchQueryInput(query);
+    dispatch(setSearchQuery(query));
+    const fetchParams = { userData: token, query, topic: filterTopic };
 
-    if (query.trim()) {
-      dispatch(setSearchQuery(query));
-      dispatch(fetchCoursesSearchFilter({ userData: token, query: query, topic: filterTopic }));
-    } else if (filterTopic !== '' && query === '') {
-      dispatch(setSearchQuery(''));
-      dispatch(fetchCoursesSearchFilter({ userData: token, query: '', topic: filterTopic }));
-    } else if (filterTopic === '' && query === '') {
-      dispatch(setSearchQuery(''));
+    if (query) {
+      dispatch(fetchCoursesSearchFilter(fetchParams));
+    } else if (filterTopic) {
+      dispatch(fetchCoursesSearchFilter({ ...fetchParams, query: '' }));
+    } else {
       dispatch(loadCourses(token));
     }
   };

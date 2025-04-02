@@ -7,7 +7,7 @@ const CourseTag = sequelize.define(
   'CourseTag',
   {
     courseId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       references: {
         model: Course,
         key: 'id',
@@ -15,7 +15,7 @@ const CourseTag = sequelize.define(
       allowNull: false,
     },
     tagId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       references: {
         model: Tag,
         key: 'id',

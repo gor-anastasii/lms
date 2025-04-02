@@ -29,8 +29,10 @@ const NavbarCourse = ({ courseInfo, progressInfo, onPartClick, onReviewClick }) 
   };
 
   React.useEffect(() => {
-    console.log(currentPartIndex);
     onPartClick(courseInfo.CourseParts[currentPartIndex]);
+    if (progressInfo.completedParts.length === courseInfo.CourseParts.length) {
+      setReviewOpen(true);
+    }
   }, []);
 
   return (

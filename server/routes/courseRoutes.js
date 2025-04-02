@@ -10,8 +10,6 @@ router.delete('/:id', CourseController.deleteCourse);
 router.patch('/:id/status', CourseController.updateCourseStatus);
 router.put('/:id', CourseController.updateCourse);
 router.get('/search-filter', checkAuth, CourseController.getCoursesWithSearchFilter);
-router.get('/filter', CourseController.filterCourses);
-router.get('/search', CourseController.searchCourses);
 router.get('/details', checkAuth, CourseController.getCourseDetails);
 
 export default router;

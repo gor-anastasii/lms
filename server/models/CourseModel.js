@@ -1,4 +1,6 @@
 import { DataTypes } from 'sequelize';
+import { v4 as uuidv4 } from 'uuid';
+
 import sequelize from '../config/database.js';
 import User from './UserModel.js';
 
@@ -6,9 +8,9 @@ const Course = sequelize.define(
   'Course',
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
-      autoIncrement: true,
     },
     title: {
       type: DataTypes.STRING,
@@ -19,7 +21,7 @@ const Course = sequelize.define(
       allowNull: false,
     },
     teacherId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       references: {
         model: User,
         key: 'id',

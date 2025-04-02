@@ -21,7 +21,11 @@ const CoursePartsPage = () => {
   React.useEffect(() => {
     dispatch(
       fetchCourseDetailsAsync({ courseId: id, token: token || localStorage.getItem('token') }),
-    );
+    ).then(() => {
+      if (course && progress.completedParts.length === course.CourseParts.length) {
+        setReviewOpen(true);
+      }
+    });
   }, [dispatch, token, id]);
 
   const handlePartClick = (part) => {

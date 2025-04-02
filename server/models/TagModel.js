@@ -5,9 +5,9 @@ const Tag = sequelize.define(
   'Tag',
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
-      autoIncrement: true,
     },
     name: {
       type: DataTypes.STRING(50),

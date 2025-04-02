@@ -22,14 +22,15 @@ const CoursePreviewPage = () => {
   const { token } = useSelector((state) => state.auth);
   const { reviews, status } = useSelector((state) => state.review);
   const { courses } = useSelector((state) => state.courses);
-  const currentCourse = courses.find((course) => course.id === parseInt(id));
+  const currentCourse = courses.find((course) => course.id === id);
 
   const handleSubscribe = async () => {
     setIsLoad(true);
     try {
       if (currentCourse.progress === null) {
-        const response = await subscribeToCourse(token, id);
+        await subscribeToCourse(token, id);
       }
+
       navigate(`/course/${id}/parts`);
     } catch (error) {
       console.log(error);

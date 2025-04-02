@@ -7,9 +7,9 @@ const Progress = sequelize.define(
   'Progress',
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
-      autoIncrement: true,
     },
     progress: {
       type: DataTypes.FLOAT,
@@ -21,7 +21,7 @@ const Progress = sequelize.define(
       allowNull: true,
     },
     userId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       references: {
         model: User,
         key: 'id',
@@ -29,7 +29,7 @@ const Progress = sequelize.define(
       allowNull: false,
     },
     courseId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       references: {
         model: Course,
         key: 'id',

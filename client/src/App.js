@@ -10,7 +10,7 @@ import SettingsPage from './pages/SettingsPage';
 import NotFoundPage from './pages/NotFoundPage';
 import { fetchUserData, logout } from './redux/slices/authSlice';
 import CoursePartsPage from './pages/CoursePartsPage';
-import TeacherPage from './pages/TeacherPage';
+import TeacherPage from './pages/Teachers/TeacherPage';
 import MyProgressPage from './pages/MyProgressPage';
 
 function App() {
@@ -63,7 +63,7 @@ function App() {
         />
         <Route path="/course/:id/parts/" element={<CoursePartsPage />} />
         <Route
-          path="/teacher-mode"
+          path="/teacher-mode/*"
           element={role && role === 'teacher' && token ? <TeacherPage /> : <NotFoundPage />}
         />
         <Route
