@@ -1,5 +1,6 @@
 import express from 'express';
 import sequelize from './config/database.js';
+import cloudinary from './config/cloudinary.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
 
@@ -16,6 +17,7 @@ import courseRouter from './routes/courseRoutes.js';
 import progressRouter from './routes/progressRoutes.js';
 import coursePartRouter from './routes/coursePartRoutes.js';
 import reviewRouter from './routes/reviewRoutes.js';
+import tagRouter from './routes/tagRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -48,6 +50,7 @@ app.use('/courses', courseRouter);
 app.use('/progress', progressRouter);
 app.use('/course-parts', coursePartRouter);
 app.use('/review', reviewRouter);
+app.use('/tags', tagRouter);
 
 app.get('/', (req, res) => res.send({ msg: 'hello from server' }));
 

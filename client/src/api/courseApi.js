@@ -24,35 +24,66 @@ export const fetchCourses = async (tokenUser) => {
   }
 };
 
-export const createCourse = async (courseData) => {
+export const fetchTeacherCourses = async (tokenUser) => {
+  const token = localStorage.getItem('token') || tokenUser;
   try {
-    const response = await axios.post(API_URL, courseData);
+    const response = await axios.get(
+      `${API_URL}/teacher-mode`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+      { withCredentials: true },
+    );
+
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Ошибка получения курсов');
+  }
+};
+
+export const createTeacherCourse = async (courseData, tokenUser) => {
+  const token = localStorage.getItem('token') || tokenUser;
+  try {
+    const response = await axios.post(`${API_URL}/teacher-mode`, courseData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Ошибка добавления курса');
   }
 };
 
-export const deleteCourse = async (id) => {
+export const updateTextFields = async (id, courseData, tokenUser) => {
+  const token = localStorage.getItem('token') || tokenUser;
   try {
-    await axios.delete(`${API_URL}/${id}`);
-  } catch (error) {
-    throw new Error(error.response?.data?.message || 'Ошибка удаления курса');
-  }
-};
-
-export const updateCourseStatus = async (id, status) => {
-  try {
-    const response = await axios.patch(`${API_URL}/${id}/status`, { status });
+    const response = await axios.patch(`${API_URL}/teacher-mode/text-update/${id}`, courseData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Ошибка обновления статуса курса');
+    throw new Error(error.response?.data?.message || 'Ошибка обновления курса');
   }
 };
 
-export const updateCourse = async (id, courseData) => {
+export const linkTagsToCourse = async (tokenUser, courseId, tagIds) => {
+  const token = localStorage.getItem('token') || tokenUser;
   try {
-    const response = await axios.put(`${API_URL}/${id}`, courseData);
+    const response = await axios.post(
+      `${API_URL}/teacher-mode/tags/${courseId}`,
+      { tagIds },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Ошибка обновления курса');
@@ -96,5 +127,121 @@ export const fetchCoursesWithSearchFilter = async (
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Ошибка получения курсов');
+  }
+};
+
+export const uploadCourseImage = async (courseId, file, tokenUser) => {
+  const token = localStorage.getItem('token') || tokenUser;
+
+  const formData = new FormData();
+  formData.append('image', file);
+
+  try {
+    const response = await axios.patch(
+      `${API_URL}/teacher-mode/imageUpload?id=${courseId}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      },
+    );
+
+    return response.data.imageUrl;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Ошибка загрузки изображения курса');
+  }
+};
+
+export const updateCourseImageByUrl = async (courseId, imageUrl, tokenUser) => {
+  const token = localStorage.getItem('token') || tokenUser;
+
+  try {
+    const response = await axios.patch(
+      `${API_URL}/teacher-mode/image?id=${courseId}`,
+      { imageUrl },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    return response.data.imageUrl;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Ошибка обновления изображения по ссылке');
+  }
+};
+
+export const deleteCourseImage = async (courseId, tokenUser) => {
+  const token = localStorage.getItem('token') || tokenUser;
+
+  try {
+    const response = await axios.delete(`${API_URL}/teacher-mode/image?id=${courseId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Ошибка удаления изображения курса');
+  }
+};
+
+export const deleteCourse = async (courseId, tokenUser) => {
+  const token = localStorage.getItem('token') || tokenUser;
+
+  try {
+    const response = await axios.delete(`${API_URL}/teacher-mode/course/${courseId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Ошибка удаления курса');
+  }
+};
+
+export const updateCoursePublishedStatus = async (courseId, newPublishedStatus, tokenUser) => {
+  const token = localStorage.getItem('token') || tokenUser;
+
+  try {
+    const response = await axios.patch(
+      `${API_URL}/teacher-mode/published/${courseId}`,
+      { published: newPublishedStatus },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Ошибка обновления статуса опубликованности');
+  }
+};
+
+export const updateCourseStatus = async (courseId, newStatus, tokenUser) => {
+  const token = localStorage.getItem('token') || tokenUser;
+
+  try {
+    const response = await axios.patch(
+      `${API_URL}/teacher-mode/status/${courseId}`,
+      { status: newStatus },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Ошибка обновления статуса опубликованности');
   }
 };

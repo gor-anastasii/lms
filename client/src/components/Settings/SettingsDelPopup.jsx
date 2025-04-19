@@ -3,7 +3,7 @@ import React from 'react';
 const SettingsDelPopup = ({ active, onClose, onDelete }) => {
   return (
     <div className={`overlay ${active ? 'overlay-active' : ''}`} onClick={onClose}>
-      <div className="settings-del-popup">
+      <div className="settings-del-popup" onClick={(e) => e.stopPropagation()}>
         <div className="settings-del-header">
           <h3>Удалить аккаунт</h3>
           <div className="settings-exit-popup" onClick={onClose}>

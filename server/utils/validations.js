@@ -17,9 +17,17 @@ export const reviewCreateValidation = [
   body('comment', 'Введите комментарий').notEmpty(),
 ];
 
-// export const postCreateValidation = [
-//     body('title', 'Введите заголовок статьи').isLength({min: 3}).isString(),
-//     body('text', 'Введите тест статьи').isLength({min: 3}).isString(),
-//     body('tags', 'Неверный формат тэгов (укажите массив)').optional().isString(),
-//     body('imageUrl', 'Неверная ссылка на изображение').optional().isString(),
-// ]
+export const updateCourseValidation = [
+  body('title')
+    .optional()
+    .isLength({ min: 3 })
+    .withMessage('Название должно содержать минимум 3 символа'),
+  body('description')
+    .optional()
+    .isLength({ min: 10 })
+    .withMessage('Описание должно содержать минимум 10 символов'),
+  body('topic')
+    .optional()
+    .isLength({ min: 3 })
+    .withMessage('Тематика должна содержать минимум 3 символа'),
+];

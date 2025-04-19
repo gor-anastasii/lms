@@ -20,7 +20,7 @@ const Header = () => {
   const navigator = useNavigate();
   const dispatch = useDispatch();
 
-  const { token } = useSelector((state) => state.auth);
+  const { token, user } = useSelector((state) => state.auth);
   const { filterTopic } = useSelector((state) => state.courses);
 
   const isAuth = ['/auth/signin', '/auth/signup'].includes(location.pathname);
@@ -119,9 +119,8 @@ const Header = () => {
               onClick={() => setActivePopup((prev) => !prev)}
               className="header-user-img"
               style={{
-                backgroundImage: 'url(/img/default-user.svg)',
+                backgroundImage: `url(${user.imageUrl ? user.imageUrl : '/img/default-user.svg'})`,
               }}></div>
-
             <HeaderPopup activePopup={activePopup} closePopup={() => setActivePopup(false)} />
           </div>
         </div>

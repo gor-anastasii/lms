@@ -75,6 +75,8 @@ const Settings = () => {
           </div>
         </div>
 
+        <div className="teacher-mode-toggle"></div>
+
         <button className="delete-profile" onClick={() => setIsDelPopupVisible(true)}>
           <svg
             xmlns="http://www.w3.org/2000/svg"

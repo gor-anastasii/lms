@@ -1,9 +1,37 @@
 import React from 'react';
-import { svgIconEdit, svgIconPlus, svgIconSort } from '../../utils/svgIcons';
+import { ClipLoader } from 'react-spinners';
+import {
+  svgIconFirstPage,
+  svgIconLastPage,
+  svgIconNextPage,
+  svgIconPlus,
+  svgIconPrevPage,
+  svgIconSort,
+} from '../../utils/svgIcons';
+import NotFoundPage from '../../pages/NotFoundPage';
 import { useNavigate } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
+import CourseRows from './CourseRows';
+import { loadTeacherCourses } from '../../redux/slices/teacherCourseSlice';
 
 const TeacherCourse = () => {
   const navigator = useNavigate();
+  const dispatch = useDispatch();
+  const { token } = useSelector((state) => state.auth);
+  const { courses, status } = useSelector((state) => state.teacherCourses);
+
+  React.useEffect(() => {
+    dispatch(loadTeacherCourses(token));
+  }, []);
+
+  if (status === 'loading') {
+    return (
+      <div className="loading">
+        <ClipLoader color="#cb91d9" loading={true} size={50} />
+      </div>
+    );
+  }
+
   return (
     <div className="teacherPage-container">
       <h1>Курсы</h1>
@@ -43,65 +71,17 @@ const TeacherCourse = () => {
           </div>
         </div>
 
-        <div className="teacher-table-content">
-          <div className="table-content-row">
-            <div className="table-content-cell">
-              <div className="cell-title">
-                <span>FullStack Course</span>
-              </div>
-            </div>
-            <div className="table-content-cell">
-              <div className="cell-price">
-                <span>Free</span>
-              </div>
-            </div>
-            <div className="table-content-cell">
-              <div className="cell-publish">
-                <span>Draft</span>
-              </div>
-            </div>
-            <div className="table-content-cell">
-              <div className="cell-public">
-                <span>Public</span>
-              </div>
-            </div>
-            <div className="table-content-cell">
-              <div className="editCourseBtn">
-                {svgIconEdit()}
-                <span>Edit</span>
-              </div>
-            </div>
-          </div>
+        <CourseRows teacherCourse={courses} />
+      </div>
 
-          <div className="table-content-row">
-            <div className="table-content-cell">
-              <div className="cell-title">
-                <span>FullStack Course</span>
-              </div>
-            </div>
-            <div className="table-content-cell">
-              <div className="cell-price">
-                <span>Free</span>
-              </div>
-            </div>
-            <div className="table-content-cell">
-              <div className="cell-publish">
-                <span>Draft</span>
-              </div>
-            </div>
-            <div className="table-content-cell">
-              <div className="cell-public">
-                <span>Public</span>
-              </div>
-            </div>
-            <div className="table-content-cell">
-              <div className="editCourseBtn">
-                {svgIconEdit()}
-                <span>Edit</span>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="pagination-block">
+        <button className="first-page">{svgIconFirstPage()}</button>
+        <button className="prev-page">{svgIconPrevPage()}</button>
+
+        <span>1/2</span>
+
+        <button className="next-page">{svgIconNextPage()}</button>
+        <button className="last-page">{svgIconLastPage()}</button>
       </div>
     </div>
   );

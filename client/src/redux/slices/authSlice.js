@@ -1,5 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { registerUser, loginUser, fetchUser, deleteUser, updateUsername } from '../../api/authApi';
+import {
+  registerUser,
+  loginUser,
+  fetchUser,
+  deleteUser,
+  updateUsername,
+  updateProfileImg,
+  deleteProfileImg,
+} from '../../api/authApi';
 
 export const register = createAsyncThunk('auth/register', async (userData) => {
   const data = await registerUser(userData);
@@ -28,6 +36,19 @@ export const updateUsernameFunc = createAsyncThunk(
     return data;
   },
 );
+
+export const updateProfileImgFunc = createAsyncThunk(
+  'auth/updateImage',
+  async ({ token, image }) => {
+    const data = await updateProfileImg(token, image);
+    return data;
+  },
+);
+
+export const deleteProfileImgFunc = createAsyncThunk('auth/deleteImage', async (token) => {
+  const data = await deleteProfileImg(token);
+  return data;
+});
 
 const authSlice = createSlice({
   name: 'auth',
@@ -105,6 +126,21 @@ const authSlice = createSlice({
       .addCase(updateUsernameFunc.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
+      })
+      .addCase(updateProfileImgFunc.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateProfileImgFunc.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.user.imageUrl = action.payload.imageUrl;
+      })
+      .addCase(updateProfileImgFunc.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      .addCase(deleteProfileImgFunc.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.user.imageUrl = action.payload.imageUrl;
       });
   },
 });

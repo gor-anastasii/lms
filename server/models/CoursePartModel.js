@@ -20,7 +20,7 @@ const CoursePart = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    videoUrl: {
+    mediaUrl: {
       type: DataTypes.STRING,
       allowNull: true,
     },

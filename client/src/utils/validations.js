@@ -41,3 +41,17 @@ export const validateAvatarUrl = (avatarUrl) => {
   }
   return true;
 };
+
+export const convertToEmbedUrl = (url) => {
+  const videoIdMatch = url.match(
+    /(?:youtu\.be\/|youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=))([^&\n]{11})/,
+  );
+  if (videoIdMatch && videoIdMatch[1]) {
+    return `https://www.youtube.com/embed/${videoIdMatch[1]}`;
+  }
+  throw new Error('Неверный формат ссылки на видео');
+};
+
+export const validateVideoUrl = (url) => {
+  return /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be|youtube-nocookie\.com)\/.+$/.test(url);
+};

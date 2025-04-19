@@ -1,9 +1,39 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteProfileImgFunc, updateProfileImgFunc } from '../../redux/slices/authSlice';
 
 const SettingsImgPopup = ({ active, onClose }) => {
+  const fileInputRef = React.useRef(null);
+  const dispatch = useDispatch();
+  const { token } = useSelector((state) => state.auth);
+
+  const handleFileSelect = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    const maxSizeInMB = 8;
+    const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
+
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/gif', 'image/png'];
+
+    if (
+      selectedFile &&
+      selectedFile.size <= maxSizeInBytes &&
+      validTypes.includes(selectedFile.type)
+    ) {
+      dispatch(updateProfileImgFunc({ userData: token, image: selectedFile }));
+    }
+  };
+
+  const handleDeletUserImg = () => {
+    dispatch(deleteProfileImgFunc(token));
+  };
+
   return (
     <div className={`overlay ${active ? 'overlay-active' : ''}`} onClick={onClose}>
-      <div className="settings-img-popup">
+      <div className="settings-img-popup" onClick={(e) => e.stopPropagation()}>
         <div className="settings-img-header">
           <h3>Фотография профиля</h3>
           <div className="settings-exit-popup" onClick={onClose}>
@@ -25,10 +55,23 @@ const SettingsImgPopup = ({ active, onClose }) => {
         </div>
 
         <p>Добавьте фото, это сделает ваш профиль более привлекательным и интересным.</p>
+
         <div className="popus-btns">
-          <button className="settings-addImg">Выбрать файл</button>
-          <button className="settings-delImg">Удалить фотографию профиля</button>
+          <button className="settings-addImg" onClick={handleFileSelect}>
+            Выбрать файл
+          </button>
+          <button className="settings-delImg" onClick={handleDeletUserImg}>
+            Удалить фотографию профиля
+          </button>
         </div>
+
+        <input
+          type="file"
+          accept=".jpg,.jpeg,.png,.gif"
+          ref={fileInputRef}
+          style={{ display: 'none' }}
+          onChange={handleFileChange}
+        />
 
         <div className="settings-popup-info">
           <svg

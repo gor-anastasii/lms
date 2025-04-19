@@ -104,3 +104,52 @@ export const updateUsername = async (tokenUser, username) => {
     }
   }
 };
+
+export const updateProfileImg = async (tokenUser, image) => {
+  const token = localStorage.getItem('token') || tokenUser;
+  const formData = new FormData();
+  formData.append('image', image);
+
+  try {
+    const response = await axios.patch(`${API_URL}/me/image`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data.message || 'Ошибка изменения фотографии');
+    } else if (error.request) {
+      throw new Error('Нет ответа от сервера');
+    } else {
+      throw new Error('Ошибка: ' + error.message);
+    }
+  }
+};
+
+export const deleteProfileImg = async (tokenUser) => {
+  const token = localStorage.getItem('token') || tokenUser;
+
+  try {
+    const response = await axios.delete(
+      `${API_URL}/me/image`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+      { withCredentials: true },
+    );
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data.message || 'Ошибка удаления фотографии пользователя');
+    } else if (error.request) {
+      throw new Error('Нет ответа от сервера');
+    } else {
+      throw new Error('Ошибка: ' + error.message);
+    }
+  }
+};

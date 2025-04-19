@@ -97,12 +97,20 @@
     }
 
     .teacher-table-content {
+      .no-courses-message {
+        text-align: center;
+        margin: 30px 0;
+        color: #737373;
+        font-style: italic;
+        width: 100%;
+      }
       .table-content-row {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
 
         .table-content-cell {
           padding: 16px;
+          align-self: center;
 
           .cell-title {
             span {
@@ -153,6 +161,36 @@
             }
           }
         }
+      }
+    }
+  }
+
+  .pagination-block {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 16px;
+
+    span {
+      color: #0a0a0a;
+      font-size: 14px;
+      margin: 0 10px;
+    }
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 8px;
+      border: 1px solid #d4d4d4;
+      background-color: white;
+      border-radius: 3px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: rgb(238, 238, 238);
       }
     }
   }
@@ -245,6 +283,10 @@
 
         &:hover {
           background-color: #2e2e2e;
+        }
+
+        &:disabled {
+          background-color: #2e2e2ec4;
         }
       }
     }

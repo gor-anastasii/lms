@@ -37,7 +37,11 @@ const Course = sequelize.define(
       allowNull: false,
     },
     status: {
-      type: DataTypes.ENUM('active', 'inactive'),
+      type: DataTypes.ENUM('public', 'private'),
+      allowNull: false,
+    },
+    published: {
+      type: DataTypes.ENUM('draft', 'published', 'unpublished'),
       allowNull: false,
     },
     imageUrl: {
