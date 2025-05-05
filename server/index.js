@@ -22,17 +22,18 @@ import tagRouter from './routes/tagRoutes.js';
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-Course.belongsToMany(Tag, { through: CourseTag, foreignKey: 'courseId' });
+User.hasMany(Progress, { foreignKey: 'userId' });
+Course.belongsToMany(Tag, { through: CourseTag, foreignKey: 'courseId', onDelete: 'CASCADE' });
 Tag.belongsToMany(Course, { through: CourseTag, foreignKey: 'tagId' });
 Review.belongsTo(User, { foreignKey: 'userId', onDelete: 'CASCADE' });
 Progress.belongsTo(User, { foreignKey: 'userId', onDelete: 'CASCADE' });
-Progress.belongsTo(User, { foreignKey: 'userId' });
-Progress.belongsTo(Course, { foreignKey: 'courseId' });
+Progress.belongsTo(User, { foreignKey: 'userId', onDelete: 'CASCADE' });
+Progress.belongsTo(Course, { foreignKey: 'courseId', onDelete: 'CASCADE' });
 
-Course.belongsTo(User, { foreignKey: 'teacherId' });
-Course.hasMany(Progress, { foreignKey: 'courseId' });
-Course.hasMany(CoursePart, { foreignKey: 'courseId' });
-Course.hasMany(Review, { foreignKey: 'courseId' });
+Course.belongsTo(User, { foreignKey: 'teacherId', onDelete: 'CASCADE' });
+Course.hasMany(Progress, { foreignKey: 'courseId', onDelete: 'CASCADE' });
+Course.hasMany(CoursePart, { foreignKey: 'courseId', onDelete: 'CASCADE' });
+Course.hasMany(Review, { foreignKey: 'courseId', onDelete: 'CASCADE' });
 
 dotenv.config();
 app.use(

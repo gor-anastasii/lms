@@ -7,10 +7,12 @@ import Navbar from '../components/Navbar/Navbar';
 import CoursePreview from '../components/CoursePreview/CoursePreview';
 import Header from '../components/Header/Header';
 import NotFoundPage from './NotFoundPage';
-import { svgIconStart } from '../utils/svgIcons';
+import { svgIconGarbage, svgIconStart } from '../utils/svgIcons';
 
-import { fetchReviews } from '../redux/slices/reviewSlice';
+import { fetchReviews, removeReviewAdmin } from '../redux/slices/reviewSlice';
 import { subscribeToCourse } from '../api/progressApi';
+import { loadCourses } from '../redux/slices/courseSlice';
+import { fetchCourseById } from '../api/courseApi';
 
 const CoursePreviewPage = () => {
   const { id } = useParams();
@@ -19,17 +21,28 @@ const CoursePreviewPage = () => {
 
   const [isLoad, setIsLoad] = React.useState(false);
 
-  const { token } = useSelector((state) => state.auth);
+  const { token, role } = useSelector((state) => state.auth);
   const { reviews, status } = useSelector((state) => state.review);
-  const { courses } = useSelector((state) => state.courses);
-  const currentCourse = courses.find((course) => course.id === id);
+  const [currentCourse, setCurrentCourse] = React.useState({});
+  const [isDeletingReviewId, setIsDeletingReviewId] = React.useState(null);
 
   const handleSubscribe = async () => {
     setIsLoad(true);
     try {
-      if (currentCourse.progress === null) {
-        await subscribeToCourse(token, id);
+      console.log(currentCourse);
+      const progress =
+        currentCourse.Progresses && currentCourse.Progresses.length > 0
+          ? currentCourse.Progresses[0].progress
+          : null;
+
+      if (progress !== null && progress !== undefined && progress !== '') {
+        console.log('Вы уже подписаны на этот курс.');
+        navigate(`/course/${id}/parts`);
+        setIsLoad(false);
+        return;
       }
+
+      await subscribeToCourse(token, id);
 
       navigate(`/course/${id}/parts`);
     } catch (error) {
@@ -39,20 +52,35 @@ const CoursePreviewPage = () => {
     }
   };
 
+  const handleDeleteReviewAdmin = async (revid) => {
+    setIsDeletingReviewId(revid);
+    await dispatch(removeReviewAdmin({ reviewId: revid, userData: token }));
+    await dispatch(fetchReviews({ courseId: id, userData: token }));
+    setIsDeletingReviewId(null);
+  };
+
   React.useEffect(() => {
-    dispatch(fetchReviews(id, token));
-  }, [dispatch]);
+    const fetchData = async () => {
+      setIsLoad(false);
+      const res = await fetchCourseById(id, token);
+      setCurrentCourse(res || {});
+      dispatch(fetchReviews({ courseId: id, userData: token }));
+      setIsLoad(true);
+    };
 
-  if (!currentCourse) {
-    return <NotFoundPage />;
-  }
+    fetchData();
+  }, [dispatch, id, token]);
 
-  if (status === 'loading' || isLoad) {
+  if (status === 'loading' || !isLoad) {
     return (
       <div className="loading">
         <ClipLoader color="#cb91d9" loading={true} size={50} />
       </div>
     );
+  }
+
+  if (!currentCourse.id) {
+    return <NotFoundPage />;
   }
 
   return (
@@ -81,17 +109,18 @@ const CoursePreviewPage = () => {
 
           <div className="course-content">
             <div className="course-info">
-              {console.log(currentCourse)}
-              <CoursePreview
-                title={currentCourse.title}
-                description={currentCourse.description}
-                topic={currentCourse.topic}
-                imageUrl={currentCourse.imageUrl}
-                tags={currentCourse.Tags}
-                update={currentCourse.updatedAt}
-                rating={currentCourse.averageRating}
-                teacherName={currentCourse.User.username}
-              />
+              {isLoad && currentCourse && (
+                <CoursePreview
+                  title={currentCourse.title}
+                  description={currentCourse.description}
+                  topic={currentCourse.topic}
+                  imageUrl={currentCourse.imageUrl}
+                  tags={currentCourse.Tags}
+                  update={currentCourse.updatedAt}
+                  rating={currentCourse.averageRating}
+                  teacherName={currentCourse.User?.username}
+                />
+              )}
 
               <div className="course-preview-comments">
                 <div>
@@ -107,11 +136,22 @@ const CoursePreviewPage = () => {
                   reviews.map((review) => (
                     <div key={review.id} className="comment-block">
                       <div className="comment-user">
-                        <h4>{review.username}</h4>
-                        <div>
-                          {svgIconStart()}
-                          <span>{review.rating}</span>
+                        <div className="comment-info">
+                          <h4>{review.username}</h4>
+                          <div>
+                            {svgIconStart()}
+                            <span>
+                              {typeof review.rating === 'number' ? review.rating.toFixed(1) : '—'}
+                            </span>
+                          </div>
                         </div>
+                        {role === 'admin' && (
+                          <button
+                            onClick={() => handleDeleteReviewAdmin(review.id)}
+                            disabled={isDeletingReviewId === review.id}>
+                            {svgIconGarbage()}
+                          </button>
+                        )}
                       </div>
                       <p>{review.comment}</p>
                     </div>

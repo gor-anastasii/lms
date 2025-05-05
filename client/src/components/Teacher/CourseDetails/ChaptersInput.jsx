@@ -8,7 +8,7 @@ import {
   updateCoursePartsOrderThunk,
 } from '../../../redux/slices/teacherCourseSlice';
 
-const ChaptersInput = ({ parts = [], courseId }) => {
+const ChaptersInput = ({ parts = [], courseId, search, page }) => {
   const navigator = useNavigate();
   const dispatch = useDispatch();
   const { token } = useSelector((state) => state.auth);
@@ -101,7 +101,9 @@ const ChaptersInput = ({ parts = [], courseId }) => {
                                 <span>{part.status}</span>
                                 <div
                                   onClick={() =>
-                                    navigator(`/teacher-mode/course/${courseId}/${part.id}`)
+                                    navigator(
+                                      `/teacher-mode/course/${courseId}/${part.id}?search=${search}&page=${page}`,
+                                    )
                                   }>
                                   {svgIconEdit()}
                                 </div>

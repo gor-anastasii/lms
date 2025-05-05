@@ -1,6 +1,6 @@
 import React from 'react';
 import { formatDate } from '../../utils/formatDate.js';
-import { svgIconStart } from '../../utils/svgIcons.js';
+import { svgIconImg, svgIconStart } from '../../utils/svgIcons.js';
 
 const CoursePreview = ({
   title,
@@ -14,7 +14,11 @@ const CoursePreview = ({
 }) => {
   return (
     <>
-      <img src={imageUrl} alt="course-img" />
+      {imageUrl ? (
+        <img src={imageUrl} alt="course-img" />
+      ) : (
+        <div className="not-image">{svgIconImg()}</div>
+      )}
 
       <div className="course-info-block">
         <div className="course-parts-rating">
@@ -41,7 +45,7 @@ const CoursePreview = ({
           <div className="course-card-rating">
             {svgIconStart()}
 
-            <span>{rating}</span>
+            <span>{rating.toFixed(1)}</span>
           </div>
         </div>
 

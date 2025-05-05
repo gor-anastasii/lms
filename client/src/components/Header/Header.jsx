@@ -28,28 +28,35 @@ const Header = () => {
     coursePath.test(location.pathname) ||
     coursePartPath.test(location.pathname) ||
     location.pathname.startsWith('/teacher-mode') ||
+    location.pathname.startsWith('/admin-mode') ||
     ['/settings/general', '/my-progress'].includes(location.pathname)
   );
 
   const isBtnBack =
     coursePartPath.test(location.pathname) ||
     ['/settings/general'].includes(location.pathname) ||
-    location.pathname.startsWith('/teacher-mode');
+    location.pathname.startsWith('/teacher-mode') ||
+    location.pathname.startsWith('/admin-mode');
 
   const handleSearch = (event) => {
-    const query = event.target.value.trim();
+    const query = event.target.value;
     setSearchQueryInput(query);
-    dispatch(setSearchQuery(query));
-    const fetchParams = { userData: token, query, topic: filterTopic };
+    dispatch(setSearchQuery(query.trim()));
+    const fetchParams = { userData: token, query, topic: filterTopic, page: 1 };
 
     if (query) {
       dispatch(fetchCoursesSearchFilter(fetchParams));
     } else if (filterTopic) {
       dispatch(fetchCoursesSearchFilter({ ...fetchParams, query: '' }));
     } else {
-      dispatch(loadCourses(token));
+      dispatch(loadCourses({ userData: token, page: 1 }));
     }
   };
+
+  React.useEffect(() => {
+    setSearchQueryInput('');
+    dispatch(setSearchQuery(''));
+  }, []);
 
   return (
     <header>
@@ -95,24 +102,6 @@ const Header = () => {
               <span>Назад к курсам</span>
             </button>
           )}
-
-          <button className="header-notify">
-            <span></span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="lucide lucide-inbox h-5 w-5 font-medium">
-              <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline>
-              <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path>
-            </svg>
-          </button>
 
           <div className="header-user">
             <div

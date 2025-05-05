@@ -75,7 +75,6 @@
         padding: 16px;
 
         div {
-          cursor: pointer;
           color: #737373;
           font-size: 14px;
 
@@ -104,9 +103,23 @@
         font-style: italic;
         width: 100%;
       }
+
+      .blocked-row {
+        background-color: #ff86864a;
+
+        &:hover {
+          background-color: #ff86864a;
+        }
+      }
+
       .table-content-row {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
+        transition: all 0.3s ease-in-out;
+
+        &:hover {
+          background-color: rgba(223, 223, 223, 0.158);
+        }
 
         .table-content-cell {
           padding: 16px;
@@ -120,7 +133,8 @@
 
           .cell-price {
             display: inline;
-            font-size: 12px;
+            text-align: center;
+            font-size: 14px;
             background-color: #edfad7;
             color: #4d802a;
             border-radius: 6px;
@@ -191,6 +205,11 @@
 
       &:hover {
         background-color: rgb(238, 238, 238);
+      }
+
+      &:disabled {
+        background-color: #e4e4e43b;
+        cursor: default;
       }
     }
   }

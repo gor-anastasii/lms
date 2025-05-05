@@ -54,3 +54,17 @@ export const deleteReview = async (reviewId, tokenUser) => {
     throw new Error(error.response?.data?.message || 'Ошибка удаления отзыва');
   }
 };
+
+export const deleteReviewAdmin = async (reviewId, tokenUser) => {
+  const token = localStorage.getItem('token') || tokenUser;
+  try {
+    const response = await axios.delete(`${API_URL}/admin-mode/${reviewId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Ошибка удаления отзыва');
+  }
+};

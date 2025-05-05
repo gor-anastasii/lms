@@ -1,13 +1,26 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
-import { svgIconStart } from '../../utils/svgIcons';
+import { svgIconImg, svgIconStart } from '../../utils/svgIcons';
 
-const CourseCard = ({ id, title, imageUrl, topic, averageRating, progress }) => {
+const CourseCard = ({ id, title, imageUrl, topic, averageRating, progress, partsCount }) => {
   const navigate = useNavigate();
+  const getPartsCountText = (count) => {
+    if (count === 1) {
+      return `${count} часть`;
+    } else if (count >= 2 && count <= 4) {
+      return `${count} части`;
+    } else {
+      return `${count} частей`;
+    }
+  };
 
   return (
     <div className="course-card" onClick={() => navigate(`/course/${id}`)}>
-      <img src={imageUrl} alt="course-preview" />
+      {imageUrl ? (
+        <img src={imageUrl} alt="course-preview" />
+      ) : (
+        <div className="not-image">{svgIconImg()}</div>
+      )}
 
       <div className="course-card-info">
         <p>{title}</p>
@@ -31,25 +44,23 @@ const CourseCard = ({ id, title, imageUrl, topic, averageRating, progress }) => 
                 <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path>
               </svg>
             </div>
-            <span>10 частей</span>
+            <span>{getPartsCountText(partsCount)}</span>
           </div>
           <div className="course-card-rating">
             {svgIconStart()}
 
-            <span>{averageRating}</span>
+            <span>{averageRating.toFixed(1)}</span>
           </div>
         </div>
-        {progress === null ? (
-          <div className="course-card-price">
-            <span>Бесплатно</span>
-          </div>
-        ) : (
+        {progress !== null ? (
           <div className="course-card-progress">
             <div className="progress-bar">
               <div style={{ width: `${progress}%` }}></div>
             </div>
             <span>{progress}% Пройдено</span>
           </div>
+        ) : (
+          <span className="not-progress">Подробнее ...</span>
         )}
       </div>
     </div>

@@ -42,6 +42,7 @@ export const createTeacherCoursePart = async (req, res) => {
     if (!course) {
       return res.status(404).json({ message: 'Курс не найден' });
     }
+
     return res.status(200).json(course);
   } catch (error) {
     console.error('Ошибка при создании раздела курса:', error);
@@ -282,6 +283,51 @@ export const deleteCoursePartMediaUrl = async (req, res) => {
   }
 };
 
+// export const updateCoursePartStatus = async (req, res) => {
+//   const userId = req.userId;
+//   const { id } = req.params;
+//   const { status } = req.body;
+
+//   if (!['active', 'inactive'].includes(status)) {
+//     return res
+//       .status(400)
+//       .json({ message: 'Недопустимый статус. Используйте "active" или "inactive"' });
+//   }
+
+//   try {
+//     const coursePart = await coursePartService.findCoursePartById(id);
+//     if (!coursePart) {
+//       return res.status(404).json({ message: 'Раздел курса не найден' });
+//     }
+
+//     const course = await Course.findOne({ where: { id: coursePart.courseId } });
+//     if (!course || course.teacherId !== userId) {
+//       return res.status(403).json({ message: 'Нет доступа к изменению этого раздела' });
+//     }
+
+//     await coursePart.update({ status });
+
+//     if (status) {
+//       const progressRecords = await Progress.findAll({ where: { courseId: course.id } });
+
+//       for (const progress of progressRecords) {
+//         const totalParts = await CoursePart.count({
+//           where: { courseId: course.id, status: 'active' },
+//         });
+//         const completedPartsCount = progress.completedParts ? progress.completedParts.length : 0;
+
+//         progress.progress = Math.round((completedPartsCount / totalParts) * 100);
+//         await progress.save();
+//       }
+//     }
+
+//     return res.status(200).json({ message: 'Статус раздела успешно обновлён', status, partId: id });
+//   } catch (error) {
+//     console.error('Ошибка при обновлении статуса раздела:', error);
+//     return res.status(500).json({ message: 'Ошибка при обновлении статуса раздела' });
+//   }
+// };
+
 export const updateCoursePartStatus = async (req, res) => {
   const userId = req.userId;
   const { id } = req.params;
@@ -304,7 +350,53 @@ export const updateCoursePartStatus = async (req, res) => {
       return res.status(403).json({ message: 'Нет доступа к изменению этого раздела' });
     }
 
+    // Сохраняем старый статус для проверки
+    const oldStatus = coursePart.status;
+
+    // Обновляем статус раздела
     await coursePart.update({ status });
+
+    // Если статус изменился на 'inactive', обновляем прогресс
+    if (oldStatus === 'active' && status === 'inactive') {
+      const progressRecords = await Progress.findAll({ where: { courseId: course.id } });
+
+      for (const progress of progressRecords) {
+        // Убираем текущий раздел из completedParts, если он был завершен
+        progress.completedParts = progress.completedParts.filter(
+          (part) => part !== coursePart.order,
+        );
+
+        const totalParts = await CoursePart.count({
+          where: { courseId: course.id, status: 'active' },
+        });
+        const completedPartsCount = progress.completedParts.length;
+
+        // Пересчитываем прогресс
+        progress.progress = Math.round((completedPartsCount / totalParts) * 100);
+        await progress.save();
+      }
+    }
+
+    // Если статус изменился на 'active', пересчитываем прогресс
+    if (oldStatus === 'inactive' && status === 'active') {
+      const progressRecords = await Progress.findAll({ where: { courseId: course.id } });
+
+      for (const progress of progressRecords) {
+        // Проверяем, если раздел добавляется в completedParts
+        if (!progress.completedParts.includes(coursePart.order)) {
+          progress.completedParts.push(coursePart.order);
+        }
+
+        const totalParts = await CoursePart.count({
+          where: { courseId: course.id, status: 'active' },
+        });
+        const completedPartsCount = progress.completedParts.length;
+
+        // Пересчитываем прогресс
+        progress.progress = Math.round((completedPartsCount / totalParts) * 100);
+        await progress.save();
+      }
+    }
 
     return res.status(200).json({ message: 'Статус раздела успешно обновлён', status, partId: id });
   } catch (error) {

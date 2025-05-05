@@ -10,6 +10,12 @@
     padding: 24px 24px 0;
   }
 
+  .coursePart-img {
+    width: auto;
+    height: auto;
+    margin: 20px 20px 0;
+  }
+
   .course-part-info {
     display: flex;
     flex-direction: row;
@@ -54,6 +60,6 @@
   }
 
   .course-part-desc {
-    padding: 24px 24px 38px;
+    padding: 12px 24px 38px;
   }
 }

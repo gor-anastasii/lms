@@ -19,6 +19,7 @@ export const getReviewsByCourseId = async (req, res) => {
     }
 
     const formattedReviews = reviews.map((review) => ({
+      id: review.id,
       username: review.User.username,
       rating: review.rating,
       comment: review.comment,
@@ -96,6 +97,47 @@ export const deleteReview = async (req, res) => {
 
     if (!review) {
       return res.status(404).json({ message: 'Отзыв не найден или не принадлежит пользователю.' });
+    }
+
+    await Review.destroy({ where: { id: reviewId } });
+
+    const reviews = await Review.findAll({
+      where: { courseId: review.courseId },
+    });
+
+    const averageRating = reviews.length
+      ? reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length
+      : 0;
+
+    await Course.update({ averageRating }, { where: { id: review.courseId } });
+
+    return res.status(200).json({
+      message: 'Отзыв успешно удален',
+      averageRating,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: 'Произошла ошибка: ', error });
+  }
+};
+
+export const deleteReviewAdmin = async (req, res) => {
+  const { reviewId } = req.params;
+  const userId = req.userId;
+
+  try {
+    const review = await Review.findOne({
+      where: {
+        id: reviewId,
+      },
+    });
+
+    const user = await User.findOne({ where: { id: userId } });
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ message: 'Доступ запрещен.' });
+    }
+
+    if (!review) {
+      return res.status(404).json({ message: 'Отзыв не найден.' });
     }
 
     await Review.destroy({ where: { id: reviewId } });

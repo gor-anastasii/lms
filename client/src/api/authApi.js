@@ -153,3 +153,89 @@ export const deleteProfileImg = async (tokenUser) => {
     }
   }
 };
+
+export const getAllTeachers = async (page = 1, search = '', tokenUser) => {
+  const token = localStorage.getItem('token') || tokenUser;
+
+  try {
+    const response = await axios.get(
+      `${API_URL}/admin-mode/teachers?page=${page}&search=${search}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data.message || 'Ошибка получения преподавателей');
+    } else if (error.request) {
+      throw new Error('Нет ответа от сервера');
+    } else {
+      throw new Error('Ошибка: ' + error.message);
+    }
+  }
+};
+
+export const createTeacher = async (userData) => {
+  try {
+    const response = await axios.post(`${API_URL}/admin-mode/register-teacher`, userData);
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data.message || 'Ошибка регистрации');
+    } else if (error.request) {
+      throw new Error('Нет ответа от сервера');
+    } else {
+      throw new Error('Ошибка: ' + error.message);
+    }
+  }
+};
+
+export const deleteTeacherAdmin = async (tokenUser, teacherId) => {
+  const token = localStorage.getItem('token') || tokenUser;
+
+  try {
+    const response = await axios.delete(`${API_URL}/admin-mode/teacher/${teacherId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data.message || 'Ошибка удаления пользователя');
+    } else if (error.request) {
+      throw new Error('Нет ответа от сервера');
+    } else {
+      throw new Error('Ошибка: ' + error.message);
+    }
+  }
+};
+
+export const updateTeachernameAdmin = async (tokenUser, username, teacherId) => {
+  const token = localStorage.getItem('token') || tokenUser;
+
+  try {
+    const response = await axios.patch(
+      `${API_URL}/admin-mode/teachername`,
+      { username, teacherId },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+      { withCredentials: true },
+    );
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data.message || 'Ошибка обновления имени пользователя');
+    } else if (error.request) {
+      throw new Error('Нет ответа от сервера');
+    } else {
+      throw new Error('Ошибка: ' + error.message);
+    }
+  }
+};

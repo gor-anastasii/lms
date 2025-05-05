@@ -48,4 +48,32 @@ const Review = sequelize.define(
 Review.belongsTo(User, { foreignKey: 'userId' });
 Review.belongsTo(Course, { foreignKey: 'courseId' });
 
+Review.addHook('afterDestroy', async (review, options) => {
+  const courseId = review.courseId;
+
+  const remainingReviews = await Review.findAll({
+    where: { courseId },
+    attributes: ['rating'],
+  });
+
+  const totalRating = remainingReviews.reduce((sum, r) => sum + r.rating, 0);
+  const averageRating = remainingReviews.length > 0 ? totalRating / remainingReviews.length : 0;
+
+  await Course.update({ averageRating }, { where: { id: courseId } });
+});
+
+Review.addHook('afterCreate', async (review, options) => {
+  const courseId = review.courseId;
+
+  const reviews = await Review.findAll({
+    where: { courseId },
+    attributes: ['rating'],
+  });
+
+  const totalRating = reviews.reduce((sum, r) => sum + r.rating, 0);
+  const averageRating = totalRating / reviews.length;
+
+  await Course.update({ averageRating }, { where: { id: courseId } });
+});
+
 export default Review;

@@ -21,11 +21,11 @@ const Sortbar = () => {
     setActiveSort(i);
     const currentQuery = searchQuery.trim();
     dispatch(setFilterTopic(filterValue));
-    const fetchParams = { userData: token, query: currentQuery };
+    const fetchParams = { userData: token, query: currentQuery, page: 1 };
 
     if (filterValue === 'Все') {
       if (currentQuery === '') {
-        dispatch(loadCourses(token));
+        dispatch(loadCourses({ userData: token, page: 1 }));
       } else {
         dispatch(fetchCoursesSearchFilter({ ...fetchParams, topic: '' }));
       }
@@ -33,6 +33,10 @@ const Sortbar = () => {
       dispatch(fetchCoursesSearchFilter({ ...fetchParams, topic: filterValue }));
     }
   };
+
+  React.useEffect(() => {
+    dispatch(setFilterTopic('Все'));
+  }, []);
 
   return (
     <div className="sort">

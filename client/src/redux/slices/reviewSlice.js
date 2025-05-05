@@ -4,11 +4,12 @@ import {
   fetchReviewsByUserIdAndCourseId,
   createReview,
   deleteReview,
+  deleteReviewAdmin,
 } from '../../api/reviewApi';
 
 export const fetchReviews = createAsyncThunk(
   'reviews/fetchByCourseId',
-  async (courseId, userData) => {
+  async ({ courseId, userData }) => {
     const response = await fetchReviewsByCourseId(courseId, userData);
     return response.data;
   },
@@ -22,7 +23,7 @@ export const fetchUserReviews = createAsyncThunk(
   },
 );
 
-export const addReview = createAsyncThunk('reviews/addReview', async (reviewData, userData) => {
+export const addReview = createAsyncThunk('reviews/addReview', async ({ reviewData, userData }) => {
   const response = await createReview(reviewData, userData);
   return response.data;
 });
@@ -31,6 +32,14 @@ export const removeReview = createAsyncThunk(
   'reviews/removeReview',
   async ({ reviewId, userData }) => {
     const response = await deleteReview(reviewId, userData);
+    return response.data;
+  },
+);
+
+export const removeReviewAdmin = createAsyncThunk(
+  'reviewsAdmin/removeReviewAdmin',
+  async ({ reviewId, userData }) => {
+    const response = await deleteReviewAdmin(reviewId, userData);
     return response.data;
   },
 );
@@ -68,9 +77,12 @@ const reviewSlice = createSlice({
         state.error = action.error.message;
       })
       .addCase(addReview.fulfilled, (state, action) => {
-        state.reviews.push(action.payload.review);
+        state.reviews = state.reviews.concat(action.payload.review);
       })
       .addCase(removeReview.fulfilled, (state, action) => {
+        state.reviews = state.reviews.filter((review) => review.id !== action.payload.reviewId);
+      })
+      .addCase(removeReviewAdmin.fulfilled, (state, action) => {
         state.reviews = state.reviews.filter((review) => review.id !== action.payload.reviewId);
       });
   },

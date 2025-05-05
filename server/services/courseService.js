@@ -7,7 +7,7 @@ import CoursePart from '../models/CoursePartModel.js';
 import CourseTag from '../models/CourseTagsModel.js';
 import Review from '../models/ReviewModel.js';
 
-export const getAllCourses = async (userId) => {
+export const getAllCourses = async (userId, limit, offset) => {
   return await Course.findAll({
     where: { status: 'public' },
     include: [
@@ -18,6 +18,43 @@ export const getAllCourses = async (userId) => {
         where: { userId },
         required: false,
         attributes: ['progress'],
+      },
+      {
+        model: CoursePart,
+        where: { status: 'active' },
+        required: false,
+        order: [['order', 'ASC']],
+      },
+    ],
+    limit,
+    offset,
+    order: [
+      ['averageRating', 'DESC'],
+      ['createdAt', 'DESC'],
+    ],
+  });
+};
+
+export const getCourseById = async (courseId, userId) => {
+  return await Course.findOne({
+    where: {
+      id: courseId,
+      status: 'public',
+    },
+    include: [
+      { model: Tag, through: { attributes: [] } },
+      { model: User, attributes: ['username'] },
+      {
+        model: Progress,
+        where: { userId },
+        required: false,
+        attributes: ['progress'],
+      },
+      {
+        model: CoursePart,
+        where: { status: 'active' },
+        required: false,
+        order: [['order', 'ASC']],
       },
     ],
   });
@@ -41,56 +78,94 @@ export const getCourseDetails = async (courseId, userId) => {
   return { course, progressEntry };
 };
 
-export const getCoursesWithSearchFilter = async (query, topic, userId) => {
-  const whereConditions = {
-    status: 'public',
-    ...(topic && { topic }),
-    ...(query && {
-      [Op.or]: [
-        {
-          [Op.and]: [
-            Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('title')), {
-              [Op.like]: `%${query.toLowerCase()}%`,
-            }),
-          ],
-        },
-        {
-          id: {
-            [Op.in]: Sequelize.literal(`(
-              SELECT "courseId" FROM "CourseTags" WHERE "tagId" IN (
-                SELECT "id" FROM "Tags" WHERE LOWER(name) LIKE '%${query.toLowerCase()}%'
-              )
-            )`),
-          },
-        },
-      ],
-    }),
-  };
-
+export const getCoursesByTeacher = async (teacherId, offset, limit, search) => {
   return await Course.findAll({
-    where: whereConditions,
+    where: {
+      teacherId,
+      title: {
+        [Op.iLike]: `%${search}%`,
+      },
+    },
     include: [
       { model: Tag, through: { attributes: [] } },
       { model: User, attributes: ['username'] },
-      {
-        model: Progress,
-        where: { userId },
-        required: false,
-        attributes: ['progress'],
-      },
+      { model: CoursePart, order: [['order', 'ASC']] },
     ],
+    order: [
+      [
+        Sequelize.literal(`
+        CASE
+          WHEN "Course"."published" = 'draft' THEN 1
+          WHEN "Course"."published" = 'unpublished' THEN 2
+          WHEN "Course"."published" = 'published' THEN 3
+          WHEN "Course"."published" = 'blocked' THEN 4
+          ELSE 5
+        END
+      `),
+        'ASC',
+      ],
+      ['createdAt', 'ASC'],
+    ],
+    limit: limit,
+    offset: offset,
   });
 };
 
-export const getCoursesByTeacher = async (teacherId) => {
+export const getCoursesByTeacherForAnalytic = async (teacherId) => {
   return await Course.findAll({
-    where: { teacherId },
+    where: {
+      teacherId,
+    },
     include: [
       { model: Tag, through: { attributes: [] } },
       { model: User, attributes: ['username'] },
       { model: CoursePart, order: [['order', 'ASC']] },
     ],
   });
+};
+
+export const countPartsByCourseId = async (courseId) => {
+  try {
+    const count = await CoursePart.count({
+      where: {
+        courseId: courseId,
+        status: 'active',
+      },
+    });
+    return count;
+  } catch (error) {
+    console.error('Ошибка при подсчете частей курса:', error);
+    throw error;
+  }
+};
+
+export const getProgressByCourseId = async (courseId) => {
+  try {
+    const progress = await Progress.findAll({
+      where: {
+        courseId: courseId,
+      },
+    });
+    return progress;
+  } catch (error) {
+    console.error('Ошибка при получении прогресса по курсу:', error);
+    throw error;
+  }
+};
+
+export const countSubscribersForCourses = async (courses) => {
+  return Promise.all(
+    courses.map(async (course) => {
+      const subscriberCount = await Progress.count({
+        where: { courseId: course.id },
+      });
+
+      return {
+        ...course.toJSON(),
+        subscriberCount,
+      };
+    }),
+  );
 };
 
 export const getCoursesByTeacherAfterUpdate = async (teacherId, id) => {
@@ -205,4 +280,25 @@ export const updatePublishedStatus = async (course, value) => {
 export const updateStatus = async (course, value) => {
   course.status = value;
   await course.save();
+};
+
+export const countProgressByCourseId = async (courseId) => {
+  return await Progress.count({
+    where: {
+      courseId: courseId,
+    },
+  });
+};
+
+export const countCompletedStudentsByCourseId = async (courseId) => {
+  return await Progress.count({
+    where: {
+      courseId,
+      progress: 100,
+    },
+  });
+};
+
+export const countReviewsByCourseId = async (courseId) => {
+  return await Review.count({ where: { courseId } });
 };

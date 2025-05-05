@@ -53,10 +53,10 @@ const Review = ({ courseId }) => {
     };
 
     try {
-      await dispatch(addReview(reviewData)).unwrap();
+      await dispatch(addReview({ reviewData, userData: token })).unwrap();
       setRatingInput('');
       setReviewInput('');
-      dispatch(fetchUserReviews({ userData: token, courseId }));
+      await dispatch(fetchUserReviews({ userData: token, courseId }));
     } catch (err) {
       console.error('Ошибка при добавлении отзыва:', err);
     }
@@ -75,13 +75,13 @@ const Review = ({ courseId }) => {
     dispatch(fetchUserReviews({ userData: token, courseId }));
   }, [dispatch, token, courseId]);
 
-  if (status === 'loading') {
-    return (
-      <div className="loading">
-        <ClipLoader color="#cb91d9" loading={true} size={50} />
-      </div>
-    );
-  }
+  // if (status === 'loading') {
+  //   return (
+  //     <div className="loading">
+  //       <ClipLoader color="#cb91d9" loading={true} size={50} />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="content course-part-content">
@@ -138,25 +138,35 @@ const Review = ({ courseId }) => {
 
         <div className="your-reviews">
           <h3>Ваши отзывы</h3>
-          {error || !Array.isArray(reviews) || reviews.length === 0 ? (
+          {status === 'loading' && (
+            <div className="loading">
+              <ClipLoader color="#cb91d9" loading={true} size={50} />
+            </div>
+          )}
+
+          {status !== 'loading' &&
+          (error || !Array.isArray(reviews) || reviews.length === 0 || !reviews) ? (
             <p>Отзывов пока нет</p>
           ) : (
             <ul>
-              {reviews.map((review) => (
-                <li key={review.id} className="your-review">
-                  <div className="review-rating">
-                    <div>
-                      {svgIconStart()}
-                      <span>Рейтинг: {review.rating}</span>
+              {reviews &&
+                reviews.map((review) => (
+                  <li key={review.id} className="your-review">
+                    <div className="review-rating">
+                      <div>
+                        {svgIconStart()}
+                        <span>Рейтинг: {review.rating}</span>
+                      </div>
+                      <button
+                        className="deleteReview"
+                        onClick={() => handleDeleteReview(review.id)}>
+                        {svgIconGarbage()}
+                      </button>
                     </div>
-                    <button className="deleteReview" onClick={() => handleDeleteReview(review.id)}>
-                      {svgIconGarbage()}
-                    </button>
-                  </div>
-                  <p>{review.comment}</p>
-                  <span>Создано: {formatDate(review.createdAt)}</span>
-                </li>
-              ))}
+                    <p>{review.comment}</p>
+                    <span>Создано: {formatDate(review.createdAt)}</span>
+                  </li>
+                ))}
             </ul>
           )}
         </div>

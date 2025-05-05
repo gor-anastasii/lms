@@ -7,7 +7,7 @@ import {
 } from '../../utils/svgIcons';
 
 import { ClipLoader } from 'react-spinners';
-import { useNavigate, useParams } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   deleteCoursePartThunk,
@@ -22,6 +22,11 @@ const TeacherCoursePartDetails = () => {
   const { id, partId } = useParams();
   const navigator = useNavigate();
   const dispatch = useDispatch();
+  const { search: searchParams } = useLocation();
+  const query = new URLSearchParams(searchParams);
+  const search = query.get('search') || '';
+  const page = parseInt(query.get('page')) || 1;
+
   const { token } = useSelector((state) => state.auth);
   const { courses, status } = useSelector((state) => state.teacherCourses);
   const [coursePart, setCoursePart] = React.useState(null);
@@ -30,7 +35,7 @@ const TeacherCoursePartDetails = () => {
   const [canPublish, setCanPublish] = React.useState(false);
 
   const fetchCourses = async () => {
-    await dispatch(loadTeacherCourses(token));
+    await dispatch(loadTeacherCourses({ userData: token, page, search }));
   };
 
   React.useEffect(() => {

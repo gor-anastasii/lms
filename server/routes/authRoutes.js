@@ -14,4 +14,14 @@ router.patch('/me/username', checkAuth, UserController.updateUsername);
 router.patch('/me/image', checkAuth, upload.single('image'), UserController.updateProfileImage);
 router.delete('/me/image', checkAuth, UserController.deleteProfileImage);
 
+router.get('/admin-mode/teachers', checkAuth, UserController.getAllTeachers);
+router.post(
+  '/admin-mode/register-teacher',
+  reqisterValidation,
+  handleValidations,
+  UserController.createTeacher,
+);
+router.patch('/admin-mode/teachername', checkAuth, UserController.updateTeachername);
+router.delete('/admin-mode/teacher/:teacherId', UserController.deleteTeacherAdmin);
+
 export default router;

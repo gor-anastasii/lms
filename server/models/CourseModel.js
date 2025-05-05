@@ -28,10 +28,6 @@ const Course = sequelize.define(
       },
       allowNull: false,
     },
-    price: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     topic: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -41,7 +37,7 @@ const Course = sequelize.define(
       allowNull: false,
     },
     published: {
-      type: DataTypes.ENUM('draft', 'published', 'unpublished'),
+      type: DataTypes.ENUM('draft', 'published', 'unpublished', 'blocked'),
       allowNull: false,
     },
     imageUrl: {

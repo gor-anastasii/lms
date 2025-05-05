@@ -49,7 +49,7 @@ export const updateProgress = async (req, res) => {
       existingProgress.completedParts = [...existingProgress.completedParts, currentPartOrder];
     }
 
-    const totalParts = await CoursePart.count({ where: { courseId } });
+    const totalParts = await CoursePart.count({ where: { courseId, status: 'active' } });
     const completedPartsCount = existingProgress.completedParts.length;
 
     existingProgress.progress = Math.round((completedPartsCount / totalParts) * 100);
@@ -79,7 +79,7 @@ export const getTotalProgress = async (req, res) => {
     const totalProgress = progressRecords.reduce((sum, record) => sum + record.progress, 0);
     const averageProgress = totalProgress / totalCourses;
 
-    const percentageProgress = (averageProgress / 100) * 100;
+    const percentageProgress = Math.round((averageProgress / 100) * 100);
 
     return res.status(200).json({
       totalCourses,

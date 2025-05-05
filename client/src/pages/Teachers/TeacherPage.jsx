@@ -7,6 +7,7 @@ import TeacherCourse from '../../components/Teacher/TeachersCourse';
 import TeacherNewCourse from '../../components/Teacher/TeacherNewCourse';
 import TeacherCourseDetails from '../../components/Teacher/TeacherCourseDetails';
 import TeacherCoursePartDetails from '../../components/Teacher/TeacherCoursePartDetails';
+import TeacherAnalytics from '../../components/Teacher/TeacherAnalytics';
 
 const TeacherPage = () => {
   return (
@@ -17,6 +18,7 @@ const TeacherPage = () => {
         <div className="content">
           <Routes>
             <Route path="/" element={<TeacherCourse />} />
+            <Route path="/analytics" element={<TeacherAnalytics />} />
             <Route path="/create" element={<TeacherNewCourse />} />
             <Route path="/course/:id" element={<TeacherCourseDetails />} />
             <Route path="/course/:id/:partId" element={<TeacherCoursePartDetails />} />

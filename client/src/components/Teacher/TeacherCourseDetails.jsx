@@ -10,7 +10,7 @@ import {
 } from '../../utils/svgIcons';
 
 import { ClipLoader } from 'react-spinners';
-import { useNavigate, useParams } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   deleteCourseThunk,
@@ -28,8 +28,13 @@ import ImageInput from './CourseDetails/ImageInput';
 const TeacherCourseDetails = () => {
   const totalFields = 4;
   const { id } = useParams();
+  const { search: searchParams } = useLocation();
+  const query = new URLSearchParams(searchParams);
+  const search = query.get('search') || '';
+  const page = parseInt(query.get('page')) || 1;
   const navigator = useNavigate();
   const dispatch = useDispatch();
+
   const { token } = useSelector((state) => state.auth);
   const { courses, status } = useSelector((state) => state.teacherCourses);
   const [course, setCourse] = React.useState(null);
@@ -67,7 +72,7 @@ const TeacherCourseDetails = () => {
   };
 
   const fetchCourses = async () => {
-    await dispatch(loadTeacherCourses(token));
+    await dispatch(loadTeacherCourses({ tokenUser: token, page, search }));
   };
 
   React.useEffect(() => {
@@ -121,7 +126,11 @@ const TeacherCourseDetails = () => {
         <div className="not-publish">
           {svgIconWarning()}
 
-          <p>Курс не опубликован. Он не будет виден студентам.</p>
+          <p>
+            {course.published === 'blocked'
+              ? 'Курс заблокирован. Он не будет виден студентам. Что-то в вашем курсе посчиталось запрещенным, измените его и через время его разблокируют.'
+              : 'Курс не опубликован. Он не будет виден студентам.'}
+          </p>
         </div>
       )}
 
@@ -156,7 +165,7 @@ const TeacherCourseDetails = () => {
             {course.published !== 'published' && (
               <button
                 className="btn-publish"
-                disabled={!isCourseCanPublish}
+                disabled={!isCourseCanPublish || course.published === 'blocked'}
                 onClick={handlePublishCourse}>
                 Опубликовать
               </button>
@@ -202,7 +211,12 @@ const TeacherCourseDetails = () => {
           <div className="course-details-inputs-left">
             <PartName svg={svgIconChapters()} title="Разделы курсов" />
 
-            <ChaptersInput parts={course.CourseParts || []} courseId={course.id} />
+            <ChaptersInput
+              parts={course.CourseParts || []}
+              courseId={course.id}
+              search={search}
+              page={page}
+            />
             <PartName svg={svgIconSell()} title="Продай свой курс" />
 
             <div className="course-details-inputs-input price-block">

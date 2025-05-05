@@ -22,10 +22,13 @@ import {
   uploadCoursePartImage,
 } from '../../api/coursePartsApi.js';
 
-export const loadTeacherCourses = createAsyncThunk('courses/load', async (userData) => {
-  const data = await fetchTeacherCourses(userData);
-  return data;
-});
+export const loadTeacherCourses = createAsyncThunk(
+  'teachercourses/load',
+  async ({ tokenUser, page, search }) => {
+    const data = await fetchTeacherCourses(tokenUser, page, search);
+    return data;
+  },
+);
 
 export const addTeacherCourse = createAsyncThunk(
   'courses/add',
@@ -167,6 +170,7 @@ const teacherCourseSlice = createSlice({
   name: 'teacherCourses',
   initialState: {
     courses: [],
+    totalPages: 0,
     status: 'idle',
     error: null,
   },
@@ -178,7 +182,8 @@ const teacherCourseSlice = createSlice({
       })
       .addCase(loadTeacherCourses.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.courses = action.payload;
+        state.courses = action.payload.courses;
+        state.totalPages = action.payload.totalPages;
       })
       .addCase(loadTeacherCourses.rejected, (state, action) => {
         state.status = 'failed';

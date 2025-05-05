@@ -12,6 +12,7 @@ import { fetchUserData, logout } from './redux/slices/authSlice';
 import CoursePartsPage from './pages/CoursePartsPage';
 import TeacherPage from './pages/Teachers/TeacherPage';
 import MyProgressPage from './pages/MyProgressPage';
+import AdminPage from './pages/Admins/AdminPage';
 
 function App() {
   const dispatch = useDispatch();
@@ -69,6 +70,11 @@ function App() {
         <Route
           path="/my-progress"
           element={token ? <MyProgressPage /> : <Navigate to="/auth/signin" />}
+        />
+
+        <Route
+          path="/admin-mode/*"
+          element={role && role === 'admin' && token ? <AdminPage /> : <NotFoundPage />}
         />
 
         <Route path="*" element={<NotFoundPage />} />

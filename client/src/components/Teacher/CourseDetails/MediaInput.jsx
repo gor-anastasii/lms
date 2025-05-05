@@ -115,11 +115,7 @@ const MediaInput = ({ partId, media, onSave }) => {
     return !file && (!url.trim() || !imageExists);
   };
 
-  const renderMediaContent = () => {
-    if (loading) {
-      return <ClipLoader color="#cb91d9" loading={loading} size={50} />;
-    }
-
+  const checkMedia = () => {
     if (media) {
       if (validateVideoUrl(media)) {
         return (
@@ -136,6 +132,12 @@ const MediaInput = ({ partId, media, onSave }) => {
         return <div className="svg-container">{svgIconImg()}</div>;
       }
     }
+  };
+
+  const renderMediaContent = () => {
+    if (loading) {
+      return <ClipLoader color="#cb91d9" loading={loading} size={50} />;
+    }
 
     if (isVideoMode) {
       if (imageData.url && validateVideoUrl(imageData.url)) {
@@ -147,6 +149,8 @@ const MediaInput = ({ partId, media, onSave }) => {
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen></iframe>
         );
+      } else if (media) {
+        return checkMedia();
       } else {
         return <div className="svg-container">{svgIconImg()}</div>;
       }
@@ -154,13 +158,20 @@ const MediaInput = ({ partId, media, onSave }) => {
 
     if (imageData.preview && imageExists) {
       return <img src={imageData.preview} alt="preview" />;
+    } else if (media) {
+      return checkMedia();
+    } else {
+      return <div className="svg-container">{svgIconImg()}</div>;
     }
-
-    return <div className="svg-container">{svgIconImg()}</div>;
   };
 
   const handleDeleteMedia = async () => {
     await dispatch(deleteCoursePartImageThunk({ partId, token }));
+  };
+
+  const handleToggle = () => {
+    setIsVideoMode((prev) => !prev);
+    setImageData({ url: '', file: '', preview: '' });
   };
 
   return (
@@ -170,7 +181,7 @@ const MediaInput = ({ partId, media, onSave }) => {
           {!addBtnClick ? <p>Media</p> : <p>{isVideoMode ? 'Video' : 'Photo'}</p>}
           {addBtnClick && (
             <label className="toggle">
-              <input type="checkbox" onClick={() => setIsVideoMode((prev) => !prev)} />
+              <input type="checkbox" onClick={handleToggle} />
               <span className="slider"></span>
             </label>
           )}
