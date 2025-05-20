@@ -30,10 +30,10 @@ const HeaderPopup = ({ activePopup, closePopup }) => {
           <div className="user-progress">
             <div className="user-progress-data">
               <span>Прогресс</span>
-              <span>{totalProgress}/100</span>
+              <span>{totalProgress || 0}/100</span>
             </div>
             <div className="user-progressbar">
-              <div style={{ width: `${totalProgress}%` }}></div>
+              <div style={{ width: `${totalProgress || 0}%` }}></div>
             </div>
           </div>
         )}

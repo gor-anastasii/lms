@@ -16,6 +16,9 @@ export const validatePassword = (password) => {
   if (password.length < 5) {
     return 'Пароль должен быть минимум 5 символов';
   }
+  if (password.length > 18) {
+    return 'Имя не должно превышать 18 символов';
+  }
   return true;
 };
 
@@ -54,4 +57,16 @@ export const convertToEmbedUrl = (url) => {
 
 export const validateVideoUrl = (url) => {
   return /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be|youtube-nocookie\.com)\/.+$/.test(url);
+};
+
+export const validateImageUrlFormat = (url) => {
+  try {
+    const parsedUrl = new URL(url);
+    if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+      return false;
+    }
+    return /\.(jpg|jpeg|png|gif)$/i.test(parsedUrl.pathname);
+  } catch {
+    return false;
+  }
 };

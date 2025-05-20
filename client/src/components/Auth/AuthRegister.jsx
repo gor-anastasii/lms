@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { register, fetchUserData } from '../../redux/slices/authSlice';
+import { register, fetchUserData, clearAuthError } from '../../redux/slices/authSlice';
 import { validateEmail, validatePassword, validateUsername } from '../../utils/validations';
 import { useNavigate } from 'react-router';
 
@@ -58,7 +58,15 @@ const AuthRegister = () => {
           type="email"
           placeholder="Имя"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={(e) => {
+            setUsername(e.target.value);
+            if (usernameError && e.target.value.trim() === '') {
+              setUsernameError('');
+            }
+            if (error) {
+              dispatch(clearAuthError());
+            }
+          }}
           required
         />
         <span className="error-span">{usernameError}</span>
@@ -68,7 +76,15 @@ const AuthRegister = () => {
           type="email"
           placeholder="Почта"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (emailError && e.target.value.trim() === '') {
+              setEmailError('');
+            }
+            if (error) {
+              dispatch(clearAuthError());
+            }
+          }}
           required
         />
         <span className="error-span">{emailError}</span>
@@ -78,7 +94,15 @@ const AuthRegister = () => {
           type="password"
           placeholder="Пароль"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            if (passwordError && e.target.value.trim() === '') {
+              setPasswordError('');
+            }
+            if (error) {
+              dispatch(clearAuthError());
+            }
+          }}
           required
         />
         <span className="error-span">{passwordError}</span>

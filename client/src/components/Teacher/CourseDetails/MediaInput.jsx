@@ -7,7 +7,11 @@ import {
   uploadCoursePartImageThunk,
 } from '../../../redux/slices/teacherCourseSlice';
 import { ClipLoader } from 'react-spinners';
-import { convertToEmbedUrl, validateVideoUrl } from '../../../utils/validations';
+import {
+  convertToEmbedUrl,
+  validateImageUrlFormat,
+  validateVideoUrl,
+} from '../../../utils/validations';
 
 const MediaInput = ({ partId, media, onSave }) => {
   const [addBtnClick, setAddBtnClick] = React.useState(false);
@@ -20,19 +24,54 @@ const MediaInput = ({ partId, media, onSave }) => {
   const fileInputRef = React.useRef(null);
   const [videoError, setVideoError] = React.useState('');
 
+  // React.useEffect(() => {
+  //   if (imageData.url && !isVideoMode) {
+  //     setLoading(true);
+  //     const img = new Image();
+
+  //     img.onload = () => {
+  //       setImageExists(true);
+  //       setLoading(false);
+  //     };
+
+  //     img.onerror = () => {
+  //       setImageExists(false);
+  //       setLoading(false);
+  //     };
+
+  //     img.src = imageData.url + (imageData.url.includes('?') ? '&' : '?') + 't=' + Date.now();
+
+  //     return () => {
+  //       img.onload = null;
+  //       img.onerror = null;
+  //     };
+  //   } else {
+  //     setImageExists(true);
+  //   }
+  // }, [imageData.url, isVideoMode]);
+
   React.useEffect(() => {
     if (imageData.url && !isVideoMode) {
+      if (!validateImageUrlFormat(imageData.url)) {
+        setImageExists(false);
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
       const img = new Image();
+
       img.onload = () => {
         setImageExists(true);
         setLoading(false);
       };
+
       img.onerror = () => {
         setImageExists(false);
         setLoading(false);
       };
-      img.src = imageData.url;
+
+      img.src = imageData.url + (imageData.url.includes('?') ? '&' : '?') + 't=' + Date.now();
 
       return () => {
         img.onload = null;
@@ -43,11 +82,30 @@ const MediaInput = ({ partId, media, onSave }) => {
     }
   }, [imageData.url, isVideoMode]);
 
+  React.useEffect(() => {
+    if (isVideoMode && imageData.url.trim()) {
+      if (!validateVideoUrl(imageData.url)) {
+        setVideoError(
+          'Неверная ссылка на видео. Убедитесь, что это ссылка с YouTube для встраивания.',
+        );
+      } else {
+        try {
+          convertToEmbedUrl(imageData.url);
+          setVideoError('');
+        } catch (err) {
+          setVideoError('Неверный формат ссылки на видео');
+        }
+      }
+    } else {
+      setVideoError('');
+    }
+  }, [imageData.url, isVideoMode]);
+
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       const validFormats = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
-      const maxSize = 8 * 1024 * 1024; // 8 MB
+      const maxSize = 8 * 1024 * 1024;
 
       if (!validFormats.includes(selectedFile.type)) {
         alert('Формат файла должен быть PNG, JPG, JPEG или GIF.');
@@ -111,8 +169,16 @@ const MediaInput = ({ partId, media, onSave }) => {
 
   const isSaveDisabled = () => {
     const { file, url } = imageData;
-    if (isVideoMode) return !validateVideoUrl(url);
-    return !file && (!url.trim() || !imageExists);
+    const fileExists = Boolean(file);
+    const urlExists = Boolean(url && url.trim());
+    const imageOk = Boolean(imageExists);
+    const videoErr = Boolean(videoError);
+
+    if (isVideoMode) {
+      return !urlExists || videoErr;
+    }
+
+    return !fileExists && (!urlExists || !imageOk);
   };
 
   const checkMedia = () => {
@@ -141,14 +207,20 @@ const MediaInput = ({ partId, media, onSave }) => {
 
     if (isVideoMode) {
       if (imageData.url && validateVideoUrl(imageData.url)) {
-        return (
-          <iframe
-            src={convertToEmbedUrl(imageData.url)}
-            title="YouTube video player"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen></iframe>
-        );
+        try {
+          const embedUrl = convertToEmbedUrl(imageData.url);
+          return (
+            <iframe
+              src={convertToEmbedUrl(embedUrl)}
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen></iframe>
+          );
+        } catch (e) {
+          console.error(e);
+          return <div className="svg-container">{svgIconImg()}</div>;
+        }
       } else if (media) {
         return checkMedia();
       } else {

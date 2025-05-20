@@ -7,6 +7,7 @@ import {
 } from '../../../redux/slices/teacherCourseSlice';
 import { ClipLoader } from 'react-spinners';
 import { svgIconGarbage, svgIconImg, svgIconPlus } from '../../../utils/svgIcons';
+import { validateImageUrlFormat } from '../../../utils/validations';
 
 const ImageInput = ({ courseId, courseImage }) => {
   const dispatch = useDispatch();
@@ -19,6 +20,11 @@ const ImageInput = ({ courseId, courseImage }) => {
 
   const checkImageExists = useCallback(() => {
     if (imageData.url) {
+      if (!validateImageUrlFormat(imageData.url)) {
+        setImageExists(false);
+        setLoading(false);
+        return;
+      }
       setLoading(true);
       const img = new Image();
       img.src = imageData.url;
@@ -43,7 +49,7 @@ const ImageInput = ({ courseId, courseImage }) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       const validFormats = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
-      const maxSize = 8 * 1024 * 1024; // 8 MB
+      const maxSize = 8 * 1024 * 1024;
 
       if (!validFormats.includes(selectedFile.type)) {
         alert('Формат файла должен быть PNG, JPG, JPEG или GIF.');
@@ -72,7 +78,7 @@ const ImageInput = ({ courseId, courseImage }) => {
     if (file) {
       dispatch(uploadCourseImageThunk({ courseId, file, token }));
     } else if (url.trim() && imageExists) {
-      dispatch(updateCourseImageByUrlThunk({ courseId, url, token }));
+      dispatch(updateCourseImageByUrlThunk({ courseId, imageUrl: url.trim(), token }));
     } else {
       alert('Вы должны либо загрузить изображение, либо вставить ссылку.');
     }

@@ -24,10 +24,12 @@ const DataInputs = ({ dataType, value, block, courseId, coursePartId }) => {
   const handleInput = (e) => {
     const newValue = e.target.value;
     setInputValue(newValue);
-    if (block === 'coursePart' && dataType === 'Description') {
-      setIsValueValid(newValue && newValue.trim().length > 0);
+    if (dataType === 'Title') {
+      setIsValueValid(newValue.trim().length > 0 && newValue.trim().length <= 255);
+    } else if (block === 'coursePart' && dataType === 'Description') {
+      setIsValueValid(newValue.trim().length > 0);
     } else {
-      setIsValueValid(newValue && newValue.trim().length > 0 && newValue.trim().length <= 255);
+      setIsValueValid(newValue.trim().length > 0 && newValue.trim().length <= 1000);
     }
   };
 

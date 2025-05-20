@@ -165,10 +165,11 @@
       margin-top: 64px;
       display: flex;
       flex-direction: row;
-      gap: 64px;
+      gap: 20px;
 
       &-left {
         flex: 1;
+        max-width: 518px;
       }
 
       &-right {

@@ -9,6 +9,7 @@ const TeacherRows = ({ teachers, openPopup, onNameChange }) => {
   const [editTeacherId, setEditTeacherId] = React.useState(null);
   const [editedName, setEditedName] = React.useState('');
   const [editInputVisible, setEditInputVisible] = React.useState(false);
+  const [error, setError] = React.useState('');
 
   const handleEditClick = (teacherId, currentName) => {
     if (editInputVisible) {
@@ -17,12 +18,26 @@ const TeacherRows = ({ teachers, openPopup, onNameChange }) => {
       setEditInputVisible(true);
       setEditTeacherId(teacherId);
       setEditedName(currentName);
+      setError('');
     }
   };
 
   const handleSaveClick = async (teacherId) => {
+    const trimmedName = editedName.trim();
+
+    if (trimmedName.length < 3 || trimmedName.length > 12) {
+      setError('Неверное имя пользователя');
+      return;
+    }
+
+    if (!trimmedName) {
+      setError('Имя не может быть пустым');
+      return;
+    }
+
     await updateTeachernameAdmin(token, editedName, teacherId);
     setEditTeacherId(null);
+    setError('');
     onNameChange();
   };
 
@@ -53,15 +68,18 @@ const TeacherRows = ({ teachers, openPopup, onNameChange }) => {
             <div className="table-content-cell">
               <div className="cell-name">
                 {editInputVisible && editTeacherId === teacher.id ? (
-                  <div>
-                    <input
-                      type="text"
-                      value={editedName}
-                      onChange={(e) => setEditedName(e.target.value)}
-                    />
-                    <div className="editCourseBtn" onClick={() => handleSaveClick(teacher.id)}>
-                      <span>Save</span>
+                  <div className="edit-name-admin">
+                    <div>
+                      <input
+                        type="text"
+                        value={editedName}
+                        onChange={(e) => setEditedName(e.target.value)}
+                      />
+                      <div className="editCourseBtn" onClick={() => handleSaveClick(teacher.id)}>
+                        <span>Save</span>
+                      </div>
                     </div>
+                    {error && <div className="error-message">{error}</div>}
                   </div>
                 ) : (
                   <span>{teacher.username}</span>

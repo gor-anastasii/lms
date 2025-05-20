@@ -9,9 +9,10 @@ const AdminCreateSection = () => {
   const [emailError, setEmailError] = React.useState('');
   const [passwordError, setPasswordError] = React.useState('');
   const [usernameError, setUsernameError] = React.useState('');
-  const [loading, setLoading] = React.useState(false); // Состояние для отслеживания загрузки
+  const [loading, setLoading] = React.useState(false);
 
-  const handleRegister = async () => {
+  const handleRegister = async (e) => {
+    e.preventDefault();
     setEmailError('');
     setPasswordError('');
     setUsernameError('');
@@ -58,7 +59,10 @@ const AdminCreateSection = () => {
           type="text"
           placeholder="Ввести имя"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={(e) => {
+            setUsername(e.target.value);
+            if (usernameError) setUsernameError('');
+          }}
           required
         />
 
@@ -67,7 +71,10 @@ const AdminCreateSection = () => {
           type="text"
           placeholder="Ввести почту"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (emailError) setEmailError('');
+          }}
           required
         />
 
@@ -76,7 +83,10 @@ const AdminCreateSection = () => {
           type="password"
           placeholder="Ввести пароль"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            if (passwordError) setPasswordError('');
+          }}
           required
         />
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { login, fetchUserData } from '../../redux/slices/authSlice';
+import { login, fetchUserData, clearAuthError } from '../../redux/slices/authSlice';
 import { validateEmail, validatePassword } from '../../utils/validations';
 import { useNavigate } from 'react-router';
 
@@ -34,7 +34,6 @@ const AuthLogin = () => {
     try {
       await dispatch(login({ email, password })).unwrap();
       navigator('/');
-      console.log('Токен:', localStorage.getItem('token'));
       await dispatch(fetchUserData(token));
     } catch (err) {
       console.error('Ошибка при входе:', err);
@@ -51,7 +50,15 @@ const AuthLogin = () => {
           type="email"
           placeholder="Почта"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (emailError && e.target.value.trim() === '') {
+              setEmailError('');
+            }
+            if (error) {
+              dispatch(clearAuthError());
+            }
+          }}
           required
         />
         <span className="error-span">{emailError}</span>
@@ -61,7 +68,15 @@ const AuthLogin = () => {
           type="password"
           placeholder="Пароль"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            if (passwordError && e.target.value.trim() === '') {
+              setPasswordError('');
+            }
+            if (error) {
+              dispatch(clearAuthError());
+            }
+          }}
           required
         />
         <span className="error-span">{passwordError}</span>

@@ -222,14 +222,25 @@
             }
 
             .cell-name {
-              div {
+              .edit-name-admin {
                 display: flex;
-                flex-direction: row;
-                align-items: center;
+                flex-direction: column;
                 gap: 3px;
 
-                input {
-                  width: 180px;
+                .error-message {
+                  font-size: 12px;
+                  color: #c24242;
+                }
+
+                div {
+                  display: flex;
+                  flex-direction: row;
+                  align-items: center;
+                  gap: 3px;
+
+                  input {
+                    width: 180px;
+                  }
                 }
               }
             }
