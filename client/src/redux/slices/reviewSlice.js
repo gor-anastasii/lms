@@ -71,15 +71,19 @@ const reviewSlice = createSlice({
       .addCase(fetchUserReviews.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.reviews = action.payload;
+        console.log(state.reviews);
       })
       .addCase(fetchUserReviews.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
       })
       .addCase(addReview.fulfilled, (state, action) => {
-        state.reviews = state.reviews.concat(action.payload.review);
+        // state.reviews = state.reviews.concat(action.payload.review);
+        console.log(state.reviews);
+        state.reviews.push(action.payload.review);
       })
       .addCase(removeReview.fulfilled, (state, action) => {
+        console.log(action.payload);
         state.reviews = state.reviews.filter((review) => review.id !== action.payload.reviewId);
       })
       .addCase(removeReviewAdmin.fulfilled, (state, action) => {

@@ -10,7 +10,7 @@ const CategoryInput = ({ value, courseId }) => {
   const [selectBtnClick, setSelectBtnClick] = React.useState(false);
   const [selectValue, setSelectValue] = React.useState(value);
 
-  const categories = ['Computer Science', 'Engineering', 'Music', 'Filming'];
+  const categories = ['Computer Science', 'Engineering', 'Music', 'Filming', 'Other'];
 
   const handleSelect = (i) => {
     setSelectValue(categories[i]);

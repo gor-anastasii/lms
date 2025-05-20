@@ -19,7 +19,6 @@ export const getAllCourses = async (req, res) => {
         {
           model: CoursePart,
           where: { status: 'active' },
-          required: false,
         },
       ],
     });
@@ -272,7 +271,6 @@ export const getCoursesWithSearchFilter = async (req, res) => {
       ],
     });
 
-    // Если курсов меньше, чем лимит, проверяем пагинацию
     const totalPages = Math.ceil(count / limit);
 
     res.status(200).json({

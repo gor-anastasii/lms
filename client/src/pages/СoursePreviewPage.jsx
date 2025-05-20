@@ -166,7 +166,8 @@ const CoursePreviewPage = () => {
 
                 <div className="course-payment-btn free-btn" onClick={handleSubscribe}>
                   <span>
-                    {currentCourse.progress === null
+                    {console.log(currentCourse)}
+                    {currentCourse.Progresses.length === 0
                       ? 'Присоединиться бесплатно'
                       : 'Продолжить обучение'}
                   </span>

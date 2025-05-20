@@ -217,21 +217,6 @@ const TeacherCourseDetails = () => {
               search={search}
               page={page}
             />
-            <PartName svg={svgIconSell()} title="Продай свой курс" />
-
-            <div className="course-details-inputs-input price-block">
-              <div className="header">
-                <p>Price</p>
-                <button>
-                  {svgIconEdit()}
-                  <span>Edit</span>
-                </button>
-              </div>
-
-              <div className="price">
-                <span>Бесплатно</span>
-              </div>
-            </div>
 
             <PartName svg={svgIconTags()} title="Добавь теги к курсу" />
             <TagsInput

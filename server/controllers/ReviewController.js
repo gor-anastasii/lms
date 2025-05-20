@@ -58,6 +58,16 @@ export const createReview = async (req, res) => {
   const userId = req.userId;
 
   try {
+    const existingReview = await Review.findOne({
+      where: { userId, courseId },
+    });
+
+    if (existingReview) {
+      return res.status(400).json({
+        message: 'Вы уже оставляли отзыв для этого курса.',
+      });
+    }
+
     const newReview = await Review.create({
       userId,
       courseId,
@@ -114,6 +124,7 @@ export const deleteReview = async (req, res) => {
     return res.status(200).json({
       message: 'Отзыв успешно удален',
       averageRating,
+      reviewId,
     });
   } catch (error) {
     return res.status(500).json({ message: 'Произошла ошибка: ', error });

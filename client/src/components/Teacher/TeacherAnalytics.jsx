@@ -202,8 +202,7 @@ const TeacherAnalytics = () => {
     },
   ];
 
-  // Обработка категории данных, если какие-то категории не представлены в данных
-  const categories = ['Computer Science', 'Music', 'Filming', 'Engineering'];
+  const categories = ['Computer Science', 'Music', 'Filming', 'Engineering', 'Other'];
 
   const completeCategoryData = categories.map((category) => {
     const categoryDataItem = statistics.categoryData?.find((item) => item.name === category);
@@ -216,7 +215,7 @@ const TeacherAnalytics = () => {
 
   return (
     <div className="teacherAnalytics">
-      <h1>📊 Статистика преподавателя</h1>
+      <h1>📊 Статистика учителя</h1>
 
       <div className="stats-grid">
         {statItems.map((item, idx) => (

@@ -146,10 +146,9 @@ const CoursePartsPage = () => {
           progressInfo={progress}
           onPartClick={handlePartClick}
           onReviewClick={handleReviewClick}
-          currentPart={currentPart} // Передаем текущую часть в NavbarCourse
-          reviewOpen={reviewOpen} // Передаем состояние отзыва в NavbarCourse // Передаем функцию для изменения состояния
+          currentPart={currentPart}
+          reviewOpen={reviewOpen}
         />
-        {console.log(reviewOpen, currentPart)}
         {reviewOpen ? (
           <Review courseId={id} />
         ) : currentPart ? (

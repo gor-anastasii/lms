@@ -1,28 +1,48 @@
 import React from 'react';
 import { ClipLoader } from 'react-spinners';
-import { useSelector, useDispatch } from 'react-redux';
 import { svgIconComments, svgIconGarbage, svgIconStart } from '../utils/svgIcons';
-import { fetchUserReviews, addReview, removeReview } from '../redux/slices/reviewSlice';
+import { fetchReviewsByUserIdAndCourseId, createReview, deleteReview } from '../api/reviewApi';
 import { formatDate } from '../utils/formatDate';
+import { useSelector } from 'react-redux';
 
 const Review = ({ courseId }) => {
-  const dispatch = useDispatch();
-  const { reviews, status, error } = useSelector((state) => state.review);
+  const [reviews, setReviews] = React.useState([]);
+  const [status, setStatus] = React.useState('idle');
+  const [error, setError] = React.useState(null);
   const { token } = useSelector((state) => state.auth);
 
   const [ratingInput, setRatingInput] = React.useState('');
   const [reviewInput, setReviewInput] = React.useState('');
   const [validationErrors, setValidationErrors] = React.useState({});
 
+  const fetchReviews = async () => {
+    setStatus('loading');
+    try {
+      const response = await fetchReviewsByUserIdAndCourseId(token, courseId);
+      setReviews(response.data);
+      setStatus('succeeded');
+    } catch (err) {
+      setStatus('failed');
+      setError(err.message);
+    }
+  };
+
   const handleRatingChange = (e) => {
     const value = e.target.value;
     if (/^(5(\.0)?|[0-4](\.\d)?|0(\.0)?)?$/.test(value) || value === '') {
       setRatingInput(value);
+
+      if (validationErrors.rating) {
+        setValidationErrors({});
+      }
     }
   };
 
   const handleReviewChange = (e) => {
     setReviewInput(e.target.value);
+    if (validationErrors.review || validationErrors.rating) {
+      setValidationErrors({});
+    }
   };
 
   const validateForm = () => {
@@ -38,6 +58,11 @@ const Review = ({ courseId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (reviews.length === 1) {
+      setValidationErrors({ rating: 'Вы уже оставили отзыв для этого курса.' });
+      return;
+    }
+
     const errors = validateForm();
     if (Object.keys(errors).length > 0) {
       setValidationErrors(errors);
@@ -53,10 +78,10 @@ const Review = ({ courseId }) => {
     };
 
     try {
-      await dispatch(addReview({ reviewData, userData: token })).unwrap();
+      const response = await createReview(reviewData, token);
+      setReviews((prevReviews) => [...prevReviews, response.data.review]);
       setRatingInput('');
       setReviewInput('');
-      await dispatch(fetchUserReviews({ userData: token, courseId }));
     } catch (err) {
       console.error('Ошибка при добавлении отзыва:', err);
     }
@@ -64,24 +89,16 @@ const Review = ({ courseId }) => {
 
   const handleDeleteReview = async (reviewId) => {
     try {
-      await dispatch(removeReview({ reviewId, userData: token })).unwrap();
-      dispatch(fetchUserReviews({ userData: token, courseId }));
+      await deleteReview(reviewId, token);
+      setReviews((prevReviews) => prevReviews.filter((review) => review.id !== reviewId)); // Удаляем отзыв
     } catch (err) {
       console.error('Ошибка при удалении отзыва:', err);
     }
   };
 
   React.useEffect(() => {
-    dispatch(fetchUserReviews({ userData: token, courseId }));
-  }, [dispatch, token, courseId]);
-
-  // if (status === 'loading') {
-  //   return (
-  //     <div className="loading">
-  //       <ClipLoader color="#cb91d9" loading={true} size={50} />
-  //     </div>
-  //   );
-  // }
+    fetchReviews();
+  }, [token, courseId]);
 
   return (
     <div className="content course-part-content">
@@ -119,54 +136,37 @@ const Review = ({ courseId }) => {
           </div>
 
           <button className="save-review" onClick={handleSubmit}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="lucide lucide-flame h-4 w-4 mr-2">
-              <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path>
-            </svg>
             <span>Сохранить отзыв</span>
           </button>
         </div>
 
         <div className="your-reviews">
-          <h3>Ваши отзывы</h3>
+          <h3>Ваш отзыв</h3>
           {status === 'loading' && (
             <div className="loading">
               <ClipLoader color="#cb91d9" loading={true} size={50} />
             </div>
           )}
 
-          {status !== 'loading' &&
-          (error || !Array.isArray(reviews) || reviews.length === 0 || !reviews) ? (
+          {status !== 'loading' && (error || !Array.isArray(reviews) || reviews.length === 0) ? (
             <p>Отзывов пока нет</p>
           ) : (
             <ul>
-              {reviews &&
-                reviews.map((review) => (
-                  <li key={review.id} className="your-review">
-                    <div className="review-rating">
-                      <div>
-                        {svgIconStart()}
-                        <span>Рейтинг: {review.rating}</span>
-                      </div>
-                      <button
-                        className="deleteReview"
-                        onClick={() => handleDeleteReview(review.id)}>
-                        {svgIconGarbage()}
-                      </button>
+              {reviews.map((review) => (
+                <li key={review.id} className="your-review">
+                  <div className="review-rating">
+                    <div>
+                      {svgIconStart()}
+                      <span>Рейтинг: {review.rating}</span>
                     </div>
-                    <p>{review.comment}</p>
-                    <span>Создано: {formatDate(review.createdAt)}</span>
-                  </li>
-                ))}
+                    <button className="deleteReview" onClick={() => handleDeleteReview(review.id)}>
+                      {svgIconGarbage()}
+                    </button>
+                  </div>
+                  <p>{review.comment}</p>
+                  <span>Создано: {formatDate(review.createdAt)}</span>
+                </li>
+              ))}
             </ul>
           )}
         </div>

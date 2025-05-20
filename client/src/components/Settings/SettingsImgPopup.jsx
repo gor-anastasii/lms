@@ -24,11 +24,13 @@ const SettingsImgPopup = ({ active, onClose }) => {
       validTypes.includes(selectedFile.type)
     ) {
       dispatch(updateProfileImgFunc({ userData: token, image: selectedFile }));
+      onClose();
     }
   };
 
   const handleDeletUserImg = () => {
     dispatch(deleteProfileImgFunc(token));
+    onClose();
   };
 
   return (

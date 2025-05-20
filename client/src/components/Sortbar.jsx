@@ -15,6 +15,7 @@ const Sortbar = () => {
     { value: 'Engineering', img: '/img/engineering.png' },
     { value: 'Filming', img: '/img/camera.png' },
     { value: 'Music', img: '/img/musical-note.png' },
+    { value: 'Other', img: '/img/others.png' },
   ];
 
   const handleFilter = (i, filterValue) => {

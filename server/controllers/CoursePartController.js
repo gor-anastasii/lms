@@ -80,28 +80,6 @@ export const deleteCoursePart = async (req, res) => {
   }
 };
 
-// export const updateCoursePartsOrder = async (req, res) => {
-//   const { courseId } = req.params;
-//   const { parts } = req.body;
-
-//   try {
-//     if (!Array.isArray(parts) || parts.length === 0) {
-//       return res.status(400).json({ message: 'Некорректные данные' });
-//     }
-
-//     const updatePromises = parts.map((part) => {
-//       return CoursePart.update({ order: part.order }, { where: { id: part.id, courseId } });
-//     });
-
-//     await Promise.all(updatePromises);
-
-//     return res.status(200).json({ message: 'Порядок глав успешно обновлен' });
-//   } catch (error) {
-//     console.error('Ошибка при обновлении порядка глав:', error);
-//     return res.status(500).json({ message: 'Ошибка при обновлении порядка глав' });
-//   }
-// };
-
 export const updateCoursePartsOrder = async (req, res) => {
   const { courseId } = req.params;
   const { parts } = req.body;
@@ -282,51 +260,6 @@ export const deleteCoursePartMediaUrl = async (req, res) => {
     res.status(500).json({ message: 'Ошибка при удалении изображени' });
   }
 };
-
-// export const updateCoursePartStatus = async (req, res) => {
-//   const userId = req.userId;
-//   const { id } = req.params;
-//   const { status } = req.body;
-
-//   if (!['active', 'inactive'].includes(status)) {
-//     return res
-//       .status(400)
-//       .json({ message: 'Недопустимый статус. Используйте "active" или "inactive"' });
-//   }
-
-//   try {
-//     const coursePart = await coursePartService.findCoursePartById(id);
-//     if (!coursePart) {
-//       return res.status(404).json({ message: 'Раздел курса не найден' });
-//     }
-
-//     const course = await Course.findOne({ where: { id: coursePart.courseId } });
-//     if (!course || course.teacherId !== userId) {
-//       return res.status(403).json({ message: 'Нет доступа к изменению этого раздела' });
-//     }
-
-//     await coursePart.update({ status });
-
-//     if (status) {
-//       const progressRecords = await Progress.findAll({ where: { courseId: course.id } });
-
-//       for (const progress of progressRecords) {
-//         const totalParts = await CoursePart.count({
-//           where: { courseId: course.id, status: 'active' },
-//         });
-//         const completedPartsCount = progress.completedParts ? progress.completedParts.length : 0;
-
-//         progress.progress = Math.round((completedPartsCount / totalParts) * 100);
-//         await progress.save();
-//       }
-//     }
-
-//     return res.status(200).json({ message: 'Статус раздела успешно обновлён', status, partId: id });
-//   } catch (error) {
-//     console.error('Ошибка при обновлении статуса раздела:', error);
-//     return res.status(500).json({ message: 'Ошибка при обновлении статуса раздела' });
-//   }
-// };
 
 export const updateCoursePartStatus = async (req, res) => {
   const userId = req.userId;
