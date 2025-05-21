@@ -168,7 +168,7 @@ const CoursePreviewPage = () => {
                   <span>
                     {console.log(currentCourse)}
                     {currentCourse.Progresses.length === 0
-                      ? 'Присоединиться бесплатно'
+                      ? 'Начать обучение'
                       : 'Продолжить обучение'}
                   </span>
                   <svg

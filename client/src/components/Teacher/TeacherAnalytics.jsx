@@ -195,11 +195,6 @@ const TeacherAnalytics = () => {
       value: statistics.averageCompletion,
       icon: <Layers />,
     },
-    {
-      label: 'Уникальных студентов',
-      value: statistics.totalUniqueStudents,
-      icon: <Users />,
-    },
   ];
 
   const categories = ['Computer Science', 'Music', 'Filming', 'Engineering', 'Other'];
